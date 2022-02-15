@@ -4,10 +4,19 @@ import { UserEntity } from 'src/entities/user.entity';
 import MySQL from '../infra/database/mysql';
 import { UserRepositoryService } from './services/user/user.repository.service';
 import { ValidatorRepositoryService } from './validator/validator.repository.service';
+import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
 
 @Module({
   imports: [MySQL.injectEntities([UserEntity]), InfraModule],
-  providers: [UserRepositoryService, ValidatorRepositoryService],
-  exports: [UserRepositoryService, ValidatorRepositoryService],
+  providers: [
+    UserRepositoryService,
+    ValidatorRepositoryService,
+    BcryptRepositoryService,
+  ],
+  exports: [
+    UserRepositoryService,
+    ValidatorRepositoryService,
+    BcryptRepositoryService,
+  ],
 })
 export class RepositoryModule {}

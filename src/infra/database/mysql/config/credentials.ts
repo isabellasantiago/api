@@ -31,7 +31,27 @@ class FactoryMySQLCredentials implements MySQLCredentialsInterface {
   readonly password = envs.mysql.password;
 
   readonly credentials = {
+    tests: {
+      HOST: 'localhost',
+      PASSWORD: 'root',
+      DATABASE: 'newwayrec',
+      USER: 'root',
+      PORT: parseInt('3306'),
+      TYPE: 'mysql',
+      URI: 'mysql://newwayrec:root@localhost:3306/new-way-recruiter',
+    },
     local: {
+      HOST: this.host,
+      PASSWORD: this.password,
+      DATABASE: this.database,
+      USER: this.user,
+      PORT: parseInt(this.port || '3306'),
+      TYPE: 'mysql',
+      URI: `mysql://${this.user}:${this.password}@${this.host}:${parseInt(
+        this.port || '3306',
+      )}/${this.database}`,
+    },
+    development: {
       HOST: this.host,
       PASSWORD: this.password,
       DATABASE: this.database,
