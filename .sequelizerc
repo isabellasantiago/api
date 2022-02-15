@@ -1,0 +1,8 @@
+const path = require('path');
+
+module.exports = {
+    'seeders-path': path.resolve('./src/infra/database/mysql/sequelize/seeders'),
+    'migrations-path': path.resolve('./src/infra/database/mysql/sequelize/migrations'),
+    'models-path': path.resolve('./src/common/models'),
+    'config': path.resolve('./src/infra/database/mysql/config'),
+};

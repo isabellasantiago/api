@@ -7,6 +7,7 @@ import {
   DeletedAt,
   Model,
 } from 'sequelize-typescript';
+import { UserType } from 'src/common/enums/user-type.enum';
 
 @Table({ tableName: 'Users', paranoid: true })
 export class UserEntity extends Model<UserEntity> {
@@ -30,7 +31,7 @@ export class UserEntity extends Model<UserEntity> {
   @Column({
     type: DataType.NUMBER,
   })
-  type: number;
+  type: UserType;
 
   @Column({
     type: DataType.BOOLEAN,

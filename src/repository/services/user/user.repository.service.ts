@@ -32,12 +32,18 @@ export class UserRepositoryService {
 
     if (!user) return false;
 
-    if (user.active) user.active = false;
+    if (user.active) {
+      user.active = false;
+      await user.save();
+      return true;
+    }
 
-    if (!user.active) user.active = true;
+    if (!user.active) {
+      user.active = true;
+      await user.save();
+      return true;
+    }
 
-    await user.save();
-
-    return true;
+    return false;
   }
 }
