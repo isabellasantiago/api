@@ -46,4 +46,18 @@ export class UserRepositoryService {
 
     return false;
   }
+
+  async deleteUser(userID: number): Promise<boolean> {
+    const user = await this.userEntity.findByPk(userID);
+
+    if (!user) return false;
+
+    const userToBeDeleted = await this.userEntity.destroy({
+      where: { id: user.id },
+    });
+
+    if (userToBeDeleted) return true;
+
+    return false;
+  }
 }
