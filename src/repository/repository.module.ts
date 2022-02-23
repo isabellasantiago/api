@@ -5,16 +5,20 @@ import MySQL from '../infra/database/mysql';
 import { UserRepositoryService } from './services/user/user.repository.service';
 import { ValidatorRepositoryService } from './validator/validator.repository.service';
 import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
+import { CandidateEntity } from 'src/entities';
+import { CandidateRepositoryService } from './services/candidate/candidate.repository.service';
 
 @Module({
-  imports: [MySQL.injectEntities([UserEntity]), InfraModule],
+  imports: [MySQL.injectEntities([UserEntity, CandidateEntity]), InfraModule],
   providers: [
     UserRepositoryService,
+    CandidateRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
   ],
   exports: [
     UserRepositoryService,
+    CandidateRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
   ],
