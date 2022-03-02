@@ -7,18 +7,25 @@ import { ValidatorRepositoryService } from './validator/validator.repository.ser
 import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
 import { CandidateEntity } from 'src/entities';
 import { CandidateRepositoryService } from './services/candidate/candidate.repository.service';
+import { CompanyRepositoryService } from './services/company/company.repository.service';
+import { CompanyEntity } from 'src/entities/company.entity';
 
 @Module({
-  imports: [MySQL.injectEntities([UserEntity, CandidateEntity]), InfraModule],
+  imports: [
+    MySQL.injectEntities([UserEntity, CandidateEntity, CompanyEntity]),
+    InfraModule,
+  ],
   providers: [
     UserRepositoryService,
     CandidateRepositoryService,
+    CompanyRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
   ],
   exports: [
     UserRepositoryService,
     CandidateRepositoryService,
+    CompanyRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
   ],
