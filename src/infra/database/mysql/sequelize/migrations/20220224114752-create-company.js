@@ -1,6 +1,7 @@
 'use strict';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const seed = require('../seeders/20220215142616-create-user');
+const seed = require('../seeders/20220225104441-create-company');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -11,30 +12,48 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
 
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Companies', {
       id: {
         type: Sequelize.BIGINT,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNul: false,
+      userID: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
       },
-      password: {
+      cnpj: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      tradeName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      corporateName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      imageURL: {
         type: Sequelize.STRING,
         allowNull: true,
-        defaultValue: null,
+      },
+      linkedinURL: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      aboutCompany: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       type: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      active: {
-        type: Sequelize.BOOLEAN,
-        allowNull: true,
-        defaultValue: true,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -55,6 +74,13 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
+
+    await queryInterface.dropTable('Companies');
   },
 };
