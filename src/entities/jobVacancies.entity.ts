@@ -1,7 +1,9 @@
 import {
   AutoIncrement,
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   HasMany,
   HasOne,
   Model,
@@ -13,7 +15,7 @@ import { EthnicityTypes } from 'src/common/enums/ethnicityTypes.enum';
 import { GenderTypes } from 'src/common/enums/genderTypes.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
 import { BenefitsByJobVacanciesEntity } from './benefitsByJobVacancies.entity';
-import { JobVacanciesByCompanyEntity } from './jobVacanciesByCompany.entity';
+import { CompanyEntity } from './company.entity';
 import { RequirementsByJobVacanciesEntity } from './requirementsByJobVacancies.entity';
 
 @Table({ tableName: 'JobVacancies' })
@@ -24,6 +26,13 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
     type: DataType.BIGINT,
   })
   id: number;
+
+  @ForeignKey(() => CompanyEntity)
+  @Column
+  companyID: number;
+
+  @BelongsTo(() => CompanyEntity)
+  company: CompanyEntity;
 
   @Column({
     type: DataType.STRING,
@@ -36,7 +45,9 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   salary: number;
 
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.ENUM({
+      values: ['0 - PJ', '1 - CLT', '2 - PJ ou CLT', '3 - OUTROS'],
+    }),
   })
   contractType: ContractTypes;
 
@@ -46,17 +57,28 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   cityAndState: string;
 
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.ENUM({
+      values: ['0 - Estagiário', '1 - JUNIOR', '2 - PLENO', '3 - SENIOR'],
+    }),
   })
   level: LevelType;
 
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.ENUM({
+      values: [
+        '0 - MULHER',
+        '1 - MULHER TRANS',
+        '2 - PESSOAS TRANS',
+        '3 - MULHER (CIS) E PESSOAS TRANS',
+      ],
+    }),
   })
   gender: GenderTypes;
 
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.ENUM({
+      values: ['0 - NEGRO', '1 - INDÍGENA', '3 - AMARELO'],
+    }),
   })
   ethnicity: EthnicityTypes;
 
@@ -71,6 +93,9 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   acceptsAllLevels: boolean;
 
   @Column
+  paused: boolean;
+
+  @Column
   createdAt: Date;
 
   @Column
@@ -78,12 +103,6 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
 
   @HasMany(() => RequirementsByJobVacanciesEntity)
   requirements: RequirementsByJobVacanciesEntity[];
-
-  @HasOne(() => JobVacanciesByCompanyEntity)
-  JobVacanciesByCompany: JobVacanciesByCompanyEntity;
-
-  @HasMany(() => JobVacanciesByCompanyEntity)
-  company: JobVacanciesByCompanyEntity[];
 
   @HasMany(() => BenefitsByJobVacanciesEntity)
   benefits: BenefitsByJobVacanciesEntity[];

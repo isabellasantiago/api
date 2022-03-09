@@ -35,6 +35,7 @@ export class CompanyRepositoryService {
 
       const company = await this.companyEntity.create(companyData);
 
+      transaction.commit();
       return company;
     } catch (err) {
       await transaction.rollback();

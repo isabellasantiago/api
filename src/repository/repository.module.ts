@@ -8,7 +8,6 @@ import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
 import {
   CandidateEntity,
   JobRequirementsEntity,
-  JobVacanciesByCompanyEntity,
   JobVacanciesEntity,
   RequirementsByJobVacanciesEntity,
 } from 'src/entities';
@@ -24,7 +23,6 @@ import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancie
       UserEntity,
       CandidateEntity,
       CompanyEntity,
-      JobVacanciesByCompanyEntity,
       JobVacanciesEntity,
       JobRequirementsEntity,
       JobBenefitsEntity,

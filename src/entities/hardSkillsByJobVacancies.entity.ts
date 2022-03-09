@@ -8,11 +8,11 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { CompanyEntity } from '.';
 import { JobVacanciesEntity } from './jobVacancies.entity';
+import { HardSkillsEntity } from './hardSkills.entity';
 
-@Table({ tableName: 'JobVancanciesByCompanies' })
-export class JobVacanciesByCompanyEntity extends Model<JobVacanciesByCompanyEntity> {
+@Table({ tableName: 'HardSkillsByJobVacancies' })
+export class HardSkillsByJobVacanciesEntity extends Model<HardSkillsByJobVacanciesEntity> {
   @PrimaryKey
   @AutoIncrement
   @Column({
@@ -20,23 +20,18 @@ export class JobVacanciesByCompanyEntity extends Model<JobVacanciesByCompanyEnti
   })
   id: number;
 
-  @ForeignKey(() => CompanyEntity)
-  @Column({
-    type: DataType.BIGINT,
-  })
-  companyID: number;
-
-  @BelongsTo(() => CompanyEntity)
-  company: CompanyEntity;
-
   @ForeignKey(() => JobVacanciesEntity)
-  @Column({
-    type: DataType.BIGINT,
-  })
+  @Column
   jobVacanciesID: number;
 
   @BelongsTo(() => JobVacanciesEntity)
   jobVacancies: JobVacanciesEntity;
+
+  @ForeignKey(() => HardSkillsEntity)
+  sofSkillsID: number;
+
+  @BelongsTo(() => HardSkillsEntity)
+  hardSkills: HardSkillsEntity;
 
   @Column
   createdAt: Date;

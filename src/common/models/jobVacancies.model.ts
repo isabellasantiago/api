@@ -9,6 +9,12 @@ export class JobVacanciesModel {
   id: number;
 
   @ApiProperty()
+  companyID: number;
+
+  @ApiProperty()
+  paused: boolean;
+
+  @ApiProperty()
   title: string;
 
   @ApiProperty()

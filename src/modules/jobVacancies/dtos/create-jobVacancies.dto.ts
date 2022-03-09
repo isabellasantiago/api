@@ -6,6 +6,7 @@ import { JobBenefitsModel } from 'src/common/models/jobBenefits.model';
 import { JobRequirementsModel } from 'src/common/models/jobRequirements.model';
 
 export interface CreateJobVacanciesDTO {
+  companyID: number;
   title: string;
   salary: number;
   contractType: ContractTypes;
@@ -14,7 +15,7 @@ export interface CreateJobVacanciesDTO {
   gender: GenderTypes;
   ethnicity: EthnicityTypes;
   pcd: boolean;
-  acceptAllLevels: boolean;
+  acceptsAllLevels: boolean;
   requirements: JobRequirementsModel[];
   benefits: JobBenefitsModel[];
 }

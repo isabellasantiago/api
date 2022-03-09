@@ -9,6 +9,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      companyID: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+      },
       title: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -44,6 +48,11 @@ module.exports = {
       acceptsAllLevels: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
+      },
+      paused: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,
