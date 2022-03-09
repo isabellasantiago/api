@@ -7,9 +7,11 @@ import {
   PrimaryKey,
   Table,
   Model,
+  HasMany,
 } from 'sequelize-typescript';
 import { CompanyTypes } from 'src/common/enums/company-type.eum';
 import { UserEntity } from '.';
+import { JobVacanciesByCompanyEntity } from './jobVacanciesByCompany.entity';
 
 @Table({ tableName: 'Companies', paranoid: true })
 export class CompanyEntity extends Model<CompanyEntity> {
@@ -83,4 +85,7 @@ export class CompanyEntity extends Model<CompanyEntity> {
     type: DataType.DATE,
   })
   deletedAt: Date;
+
+  @HasMany(() => JobVacanciesByCompanyEntity)
+  jobVacancies: JobVacanciesByCompanyEntity[];
 }
