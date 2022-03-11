@@ -4,3 +4,7 @@ export * from './company.entity';
 export * from './jobVacancies.entity';
 export * from './jobRequirements.entity';
 export * from './requirementsByJobVacancies.entity';
+export * from './hardSkills.entity';
+export * from './softSkills.entity';
+export * from './softSkillsByJobVacancies.entity';
+export * from './hardSkillsByJobVacancies.entity';

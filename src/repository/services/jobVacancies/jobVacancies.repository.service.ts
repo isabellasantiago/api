@@ -8,8 +8,10 @@ import {
   RequirementsByJobVacanciesEntity,
 } from 'src/entities';
 import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancies.entity';
+import { HardSkillsEntity } from 'src/entities/hardSkills.entity';
 import { HardSkillsByJobVacanciesEntity } from 'src/entities/hardSkillsByJobVacancies.entity';
 import { JobBenefitsEntity } from 'src/entities/jobBenefits.entity';
+import { SoftSkillsEntity } from 'src/entities/softSkills.entity';
 import { SoftSkillsByJobVacanciesEntity } from 'src/entities/softSkillsByJobVacancies.entity';
 import { CreateJobVacanciesDTO } from 'src/modules/jobVacancies/dtos/create-jobVacancies.dto';
 
@@ -25,6 +27,10 @@ export class JobVacanciesRepositoryService {
     private readonly requirementsByJobVacanciesEntity: typeof RequirementsByJobVacanciesEntity,
     @InjectModel(BenefitsByJobVacanciesEntity)
     private readonly benefitsByJobVacanciesEntity: typeof BenefitsByJobVacanciesEntity,
+    @InjectModel(SoftSkillsEntity)
+    private readonly softSkillsEntity: typeof SoftSkillsEntity,
+    @InjectModel(HardSkillsEntity)
+    private readonly hardSkillsEntity: typeof HardSkillsEntity,
     @InjectModel(SoftSkillsByJobVacanciesEntity)
     private readonly softSkillsByJobVacancies: typeof SoftSkillsByJobVacanciesEntity,
     @InjectModel(HardSkillsByJobVacanciesEntity)
@@ -44,6 +50,8 @@ export class JobVacanciesRepositoryService {
     acceptsAllLevels,
     requirements,
     benefits,
+    softSkills,
+    hardSkills,
   }: CreateJobVacanciesDTO): Promise<JobVacanciesModel> {
     const transaction = await this.jobVacanciesEntity.sequelize.transaction();
     try {
@@ -82,6 +90,54 @@ export class JobVacanciesRepositoryService {
         }),
       );
 
+      await Promise.all(
+        softSkills.map(async (softSkill) => {
+          const convertedSoftSkill = softSkill.name.toUpperCase();
+          const softSkillExists = await this.softSkillsEntity.findOne({
+            where: { name: softSkill.name },
+          });
+
+          if (softSkillExists && softSkillExists.name === convertedSoftSkill) {
+            await this.softSkillsByJobVacancies.create({
+              jobVacanciesID: jobVacancie.id,
+              softSkillsID: softSkillExists.id,
+            });
+          }
+          const softSkillCreated = await this.softSkillsEntity.create({
+            ...softSkill,
+            name: convertedSoftSkill,
+          });
+          await this.softSkillsByJobVacancies.create({
+            jobVacanciesID: jobVacancie.id,
+            softSkillsID: softSkillCreated.id,
+          });
+        }),
+      );
+
+      await Promise.all(
+        hardSkills.map(async (hardSkill) => {
+          const convertedSoftSkill = hardSkill.name.toUpperCase();
+          const softSkillExists = await this.hardSkillsEntity.findOne({
+            where: { name: hardSkill.name },
+          });
+
+          if (softSkillExists && softSkillExists.name === convertedSoftSkill) {
+            await this.hardSkillsByJobVacancies.create({
+              jobVacanciesID: jobVacancie.id,
+              hardSkillsID: softSkillExists.id,
+            });
+          }
+          const hardSkillCreated = await this.hardSkillsEntity.create({
+            ...hardSkill,
+            name: convertedSoftSkill,
+          });
+          await this.hardSkillsByJobVacancies.create({
+            jobVacanciesID: jobVacancie.id,
+            hardSkillsID: hardSkillCreated.id,
+          });
+        }),
+      );
+
       transaction.commit();
       return jobVacancie;
     } catch (err) {
@@ -92,6 +148,36 @@ export class JobVacanciesRepositoryService {
 
   async getAllJobVacancies(): Promise<JobVacanciesModel[]> {
     return await this.jobVacanciesEntity.findAll();
+  }
+
+  async getJobVacancie(id: number): Promise<JobVacanciesModel> {
+    const jobVacancie = await this.jobVacanciesEntity.findOne({
+      where: { id },
+      include: [
+        {
+          model: RequirementsByJobVacanciesEntity,
+          required: true,
+          include: [{ model: JobRequirementsEntity, required: true }],
+        },
+        {
+          model: BenefitsByJobVacanciesEntity,
+          required: true,
+          include: [{ model: JobBenefitsEntity, required: true }],
+        },
+        {
+          model: SoftSkillsByJobVacanciesEntity,
+          required: true,
+          include: [{ model: SoftSkillsEntity, required: true }],
+        },
+        {
+          model: HardSkillsByJobVacanciesEntity,
+          required: true,
+          include: [{ model: HardSkillsEntity, required: true }],
+        },
+      ],
+    });
+
+    return jobVacancie;
   }
 
   async getAllCompanyJobVacancies(
@@ -144,5 +230,25 @@ export class JobVacanciesRepositoryService {
     });
 
     return benefits;
+  }
+
+  async getJobVacancieSoftSkills(
+    jobVacanciesID: number,
+  ): Promise<SoftSkillsByJobVacanciesEntity[]> {
+    const softSkills = await this.softSkillsByJobVacancies.findAll({
+      where: { jobVacanciesID },
+      include: { model: SoftSkillsEntity, required: true },
+    });
+    return softSkills;
+  }
+
+  async getJobVacancieHardSkills(
+    jobVacanciesID: number,
+  ): Promise<HardSkillsByJobVacanciesEntity[]> {
+    const hardSkills = await this.hardSkillsByJobVacancies.findAll({
+      where: { jobVacanciesID },
+      include: { model: HardSkillsEntity, required: true },
+    });
+    return hardSkills;
   }
 }

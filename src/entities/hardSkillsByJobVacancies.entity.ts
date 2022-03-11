@@ -28,7 +28,8 @@ export class HardSkillsByJobVacanciesEntity extends Model<HardSkillsByJobVacanci
   jobVacancies: JobVacanciesEntity;
 
   @ForeignKey(() => HardSkillsEntity)
-  sofSkillsID: number;
+  @Column
+  hardSkillsID: number;
 
   @BelongsTo(() => HardSkillsEntity)
   hardSkills: HardSkillsEntity;

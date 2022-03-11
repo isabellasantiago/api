@@ -16,6 +16,11 @@ import { CompanyRepositoryService } from './services/company/company.repository.
 import { CompanyEntity } from 'src/entities/company.entity';
 import { JobBenefitsEntity } from 'src/entities/jobBenefits.entity';
 import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancies.entity';
+import { SoftSkillsEntity } from 'src/entities/softSkills.entity';
+import { HardSkillsEntity } from 'src/entities/hardSkills.entity';
+import { SoftSkillsByJobVacanciesEntity } from 'src/entities/softSkillsByJobVacancies.entity';
+import { HardSkillsByJobVacanciesEntity } from 'src/entities/hardSkillsByJobVacancies.entity';
+import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacancies.repository.service';
 
 @Module({
   imports: [
@@ -28,6 +33,10 @@ import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancie
       JobBenefitsEntity,
       RequirementsByJobVacanciesEntity,
       BenefitsByJobVacanciesEntity,
+      SoftSkillsEntity,
+      HardSkillsEntity,
+      SoftSkillsByJobVacanciesEntity,
+      HardSkillsByJobVacanciesEntity,
     ]),
     InfraModule,
   ],
@@ -37,6 +46,7 @@ import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancie
     CompanyRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
+    JobVacanciesRepositoryService,
   ],
   exports: [
     UserRepositoryService,
@@ -44,6 +54,7 @@ import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancie
     CompanyRepositoryService,
     ValidatorRepositoryService,
     BcryptRepositoryService,
+    JobVacanciesRepositoryService,
   ],
 })
 export class RepositoryModule {}
