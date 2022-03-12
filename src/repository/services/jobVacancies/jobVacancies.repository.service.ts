@@ -1,7 +1,9 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { BenefitsByJobVacanciesModel } from 'src/common/models/benefitsByobVacancies.model';
+import { HardSkillsByJobVacanciesModel } from 'src/common/models/hardSkillsByJobVacancies.model';
 import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
 import { RequirementsByJobVacanciesModel } from 'src/common/models/requirementsByJobVacancies.model';
+import { SoftSkillsByJobVacanciesModel } from 'src/common/models/softSkillsByJobVacancies.model';
 import {
   JobRequirementsEntity,
   JobVacanciesEntity,
@@ -234,7 +236,7 @@ export class JobVacanciesRepositoryService {
 
   async getJobVacancieSoftSkills(
     jobVacanciesID: number,
-  ): Promise<SoftSkillsByJobVacanciesEntity[]> {
+  ): Promise<SoftSkillsByJobVacanciesModel[]> {
     const softSkills = await this.softSkillsByJobVacancies.findAll({
       where: { jobVacanciesID },
       include: { model: SoftSkillsEntity, required: true },
@@ -244,7 +246,7 @@ export class JobVacanciesRepositoryService {
 
   async getJobVacancieHardSkills(
     jobVacanciesID: number,
-  ): Promise<HardSkillsByJobVacanciesEntity[]> {
+  ): Promise<HardSkillsByJobVacanciesModel[]> {
     const hardSkills = await this.hardSkillsByJobVacancies.findAll({
       where: { jobVacanciesID },
       include: { model: HardSkillsEntity, required: true },

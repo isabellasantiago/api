@@ -8,7 +8,7 @@ export class SoftSkillsByJobVacanciesModel {
   jobVacanciesID: number;
 
   @ApiProperty()
-  sofSkillsID: number;
+  softSkillsID: number;
 
   @ApiProperty()
   createdAt: Date;
