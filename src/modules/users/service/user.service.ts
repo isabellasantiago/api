@@ -20,7 +20,7 @@ export class UserService {
     private readonly bcryptRepository: BcryptRepositoryService,
   ) {}
 
-  async createUser(user: CreateUserDto): Promise<UserModel> {
+  async createUser(user: CreateUserDto): Promise<Omit<UserModel, 'password'>> {
     const userExists = await this.userRepository.getUserByEmail(user.email);
 
     if (userExists) throw new ConflictException('User already exists');

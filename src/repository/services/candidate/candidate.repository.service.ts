@@ -36,6 +36,7 @@ export class CandidateRepositoryService {
         updatedAt: new Date(),
       });
 
+      transaction.commit();
       return candidate;
     } catch (err) {
       await transaction.rollback();

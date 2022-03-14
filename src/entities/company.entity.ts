@@ -7,6 +7,7 @@ import {
   PrimaryKey,
   Table,
   Model,
+  HasMany,
 } from 'sequelize-typescript';
 import { CompanyTypes } from 'src/common/enums/company-type.eum';
 import { UserEntity } from '.';
