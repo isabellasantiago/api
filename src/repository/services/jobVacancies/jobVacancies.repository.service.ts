@@ -5,6 +5,7 @@ import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
 import { RequirementsByJobVacanciesModel } from 'src/common/models/requirementsByJobVacancies.model';
 import { SoftSkillsByJobVacanciesModel } from 'src/common/models/softSkillsByJobVacancies.model';
 import {
+  CompanyEntity,
   JobRequirementsEntity,
   JobVacanciesEntity,
   RequirementsByJobVacanciesEntity,
@@ -72,9 +73,24 @@ export class JobVacanciesRepositoryService {
 
       await Promise.all(
         requirements.map(async (requirement) => {
-          const requirementCreated = await this.jobRequirementsEntity.create(
-            requirement,
-          );
+          const requirementConverted = requirement.name.toUpperCase();
+          const requirementAlreadyExists =
+            await this.jobRequirementsEntity.findOne({
+              where: { name: requirement.name },
+            });
+
+          if (
+            requirementAlreadyExists &&
+            requirementAlreadyExists.name === requirementConverted
+          ) {
+            await this.requirementsByJobVacanciesEntity.create({
+              jobVacanciesID: jobVacancie.id,
+              jobRequirementsID: requirementAlreadyExists.id,
+            });
+          }
+          const requirementCreated = await this.jobRequirementsEntity.create({
+            name: requirementConverted,
+          });
           await this.requirementsByJobVacanciesEntity.create({
             jobVacanciesID: jobVacancie.id,
             jobRequirementsID: requirementCreated.id,
@@ -84,7 +100,24 @@ export class JobVacanciesRepositoryService {
 
       await Promise.all(
         benefits.map(async (benefit) => {
-          const benefitsCreated = await this.jobBenefitsEntity.create(benefit);
+          const benefitConverted = benefit.name.toUpperCase();
+          const benefitAlreadyExists = await this.jobBenefitsEntity.findOne({
+            where: { name: benefitConverted },
+          });
+
+          if (
+            benefitAlreadyExists &&
+            benefitAlreadyExists.name === benefitConverted
+          ) {
+            await this.benefitsByJobVacanciesEntity.create({
+              jobVacanciesID: jobVacancie.id,
+              jobBenefitsID: benefitAlreadyExists.id,
+            });
+          }
+
+          const benefitsCreated = await this.jobBenefitsEntity.create({
+            name: benefitConverted,
+          });
           await this.benefitsByJobVacanciesEntity.create({
             jobVacanciesID: jobVacancie.id,
             jobBenefitsID: benefitsCreated.id,
@@ -157,24 +190,8 @@ export class JobVacanciesRepositoryService {
       where: { id },
       include: [
         {
-          model: RequirementsByJobVacanciesEntity,
+          model: CompanyEntity,
           required: true,
-          include: [{ model: JobRequirementsEntity, required: true }],
-        },
-        {
-          model: BenefitsByJobVacanciesEntity,
-          required: true,
-          include: [{ model: JobBenefitsEntity, required: true }],
-        },
-        {
-          model: SoftSkillsByJobVacanciesEntity,
-          required: true,
-          include: [{ model: SoftSkillsEntity, required: true }],
-        },
-        {
-          model: HardSkillsByJobVacanciesEntity,
-          required: true,
-          include: [{ model: HardSkillsEntity, required: true }],
         },
       ],
     });

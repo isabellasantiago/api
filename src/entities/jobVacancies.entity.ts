@@ -16,7 +16,9 @@ import { GenderTypes } from 'src/common/enums/genderTypes.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
 import { BenefitsByJobVacanciesEntity } from './benefitsByJobVacancies.entity';
 import { CompanyEntity } from './company.entity';
+import { HardSkillsByJobVacanciesEntity } from './hardSkillsByJobVacancies.entity';
 import { RequirementsByJobVacanciesEntity } from './requirementsByJobVacancies.entity';
+import { SoftSkillsByJobVacanciesEntity } from './softSkillsByJobVacancies.entity';
 
 @Table({ tableName: 'JobVacancies' })
 export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
@@ -106,4 +108,10 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
 
   @HasMany(() => BenefitsByJobVacanciesEntity)
   benefits: BenefitsByJobVacanciesEntity[];
+
+  @HasMany(() => SoftSkillsByJobVacanciesEntity)
+  softSkills: SoftSkillsByJobVacanciesEntity[];
+
+  @HasMany(() => HardSkillsByJobVacanciesEntity)
+  hardSkills: HardSkillsByJobVacanciesEntity[];
 }

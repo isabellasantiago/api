@@ -14,12 +14,12 @@ export interface CreateJobVacanciesDTO {
   contractType: ContractTypes;
   cityAndState: string;
   level: LevelType;
-  gender: GenderTypes;
-  ethnicity: EthnicityTypes;
+  gender?: GenderTypes;
+  ethnicity?: EthnicityTypes;
   pcd: boolean;
   acceptsAllLevels: boolean;
-  requirements: JobRequirementsModel[];
-  benefits: JobBenefitsModel[];
-  softSkills: SoftSkillsModel[];
-  hardSkills: HardSkillsModel[];
+  requirements?: JobRequirementsModel[];
+  benefits?: JobBenefitsModel[];
+  softSkills?: SoftSkillsModel[];
+  hardSkills?: HardSkillsModel[];
 }

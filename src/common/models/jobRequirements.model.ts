@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class JobRequirementsModel {
   @ApiProperty()
-  id: number;
+  id?: number;
 
   @ApiProperty()
   name: string;

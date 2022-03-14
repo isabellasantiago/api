@@ -22,7 +22,7 @@ export class JobRequirementsEntity extends Model<JobRequirementsEntity> {
   @Column({
     type: DataType.STRING,
   })
-  name: string;
+  name?: string;
 
   @Column
   createdAt: Date;

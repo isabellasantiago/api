@@ -42,7 +42,7 @@ export class JobVacancieController {
     return await this.jobVacanciesService.getAllJobVacancies();
   }
 
-  @Get('/:companyID')
+  @Get('/company/:companyID')
   async getAllCompanyJobVacancies(
     @Param(new ValidationPipe({ transform: true }))
     param: {
