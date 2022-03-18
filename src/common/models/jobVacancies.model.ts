@@ -24,6 +24,9 @@ export class JobVacanciesModel {
   contractType: ContractTypes;
 
   @ApiProperty()
+  about: string;
+
+  @ApiProperty()
   cityAndState: string;
 
   @ApiProperty()

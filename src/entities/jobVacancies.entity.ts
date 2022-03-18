@@ -5,7 +5,6 @@ import {
   DataType,
   ForeignKey,
   HasMany,
-  HasOne,
   Model,
   PrimaryKey,
   Table,
@@ -56,6 +55,11 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   @Column({
     type: DataType.STRING,
   })
+  about: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
   cityAndState: string;
 
   @Column({
@@ -97,10 +101,16 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   @Column
   paused: boolean;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
+  })
   createdAt: Date;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
+  })
   updatedAt: Date;
 
   @HasMany(() => RequirementsByJobVacanciesEntity)

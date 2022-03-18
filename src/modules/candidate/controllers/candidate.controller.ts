@@ -9,11 +9,13 @@ import {
   Put,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CandidateModel } from 'src/common/models/candidate.model';
 import { CreateCandidateDTO } from '../dto/create-candidate.dto';
 import { UpdateCandidateDTO } from '../dto/update-candidate.dto';
 import { CandidateService } from '../service/candidate.service';
 
+@ApiTags('Candidate')
 @Controller('/candidate')
 export class CandidateController {
   constructor(
