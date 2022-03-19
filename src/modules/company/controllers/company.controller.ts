@@ -8,11 +8,13 @@ import {
   Put,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CompanyModel } from 'src/common/models/company.model';
 import { CreateCompanyDTO } from '../dtos/create-company.dto';
 import { UpdateCompanyDTO } from '../dtos/update-company.dto';
 import { CompanyService } from '../service/company.service';
 
+@ApiTags('Company')
 @Controller('/company')
 export class CompanyController {
   constructor(

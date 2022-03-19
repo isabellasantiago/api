@@ -8,6 +8,7 @@ import {
   Put,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BenefitsByJobVacanciesModel } from 'src/common/models/benefitsByobVacancies.model';
 import { HardSkillsByJobVacanciesModel } from 'src/common/models/hardSkillsByJobVacancies.model';
 import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
@@ -16,6 +17,7 @@ import { SoftSkillsByJobVacanciesModel } from 'src/common/models/softSkillsByJob
 import { CreateJobVacanciesDTO } from '../dtos/create-jobVacancies.dto';
 import { JobVacanciesService } from '../services/jobVacancies.service';
 
+@ApiTags('Job Vacancie')
 @Controller('jobVacancie')
 export class JobVacancieController {
   constructor(
