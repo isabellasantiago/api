@@ -21,9 +21,14 @@ export class SoftSkillsEntity extends Model<SoftSkillsEntity> {
   })
   name: string;
 
-  @Column
+  @Column({
+    defaultValue: DataType.NOW,
+  })
   createdAt: Date;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
+  })
   updatedAt: Date;
 }

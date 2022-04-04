@@ -21,6 +21,8 @@ import { HardSkillsEntity } from 'src/entities/hardSkills.entity';
 import { SoftSkillsByJobVacanciesEntity } from 'src/entities/softSkillsByJobVacancies.entity';
 import { HardSkillsByJobVacanciesEntity } from 'src/entities/hardSkillsByJobVacancies.entity';
 import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacancies.repository.service';
+import { HardSkillsRepositoryService } from './services/hardSkills/hardSkills.repository.service';
+import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.repository.service';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacanc
     ValidatorRepositoryService,
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
+    HardSkillsRepositoryService,
+    SoftSkillsRepositoryService,
   ],
   exports: [
     UserRepositoryService,
@@ -55,6 +59,8 @@ import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacanc
     ValidatorRepositoryService,
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
+    HardSkillsRepositoryService,
+    SoftSkillsRepositoryService,
   ],
 })
 export class RepositoryModule {}
