@@ -15,12 +15,18 @@ module.exports = {
     await queryInterface.bulkInsert('SoftSkills', [
       {
         name: 'Boa comunicação',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         name: 'Trabalho em equipe',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         name: 'Facilidade em aprender',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
     ]);
   },
