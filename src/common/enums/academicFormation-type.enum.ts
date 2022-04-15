@@ -1,0 +1,8 @@
+export enum AcademicFormationTypes {
+    HIGH_SCHOOL = 0,
+    ASSOCIATES_DEGREE = 1,
+    UNDERGRADUATE_DEGREE = 2,
+    GRADUATE_SCHOOL = 3,
+    MASTERS_DEGREE = 4,
+    DOCTORATE_DEGREE = 5,
+}

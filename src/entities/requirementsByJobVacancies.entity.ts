@@ -34,9 +34,15 @@ export class RequirementsByJobVacanciesEntity extends Model<RequirementsByJobVac
   @BelongsTo(() => JobRequirementsEntity)
   jobRequirements: JobRequirementsEntity;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   createdAt: Date;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   updatedAt: Date;
 }

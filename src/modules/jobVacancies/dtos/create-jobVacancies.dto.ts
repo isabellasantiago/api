@@ -30,7 +30,7 @@ export class CreateJobVacanciesDTO {
   about: string;
 
   @ApiProperty({
-    description: '0 = Estágio, 1 = JR, 2 = PL, 3 = SR',
+    description: '0 = Estágio, 1 = JR, 2 = PL, 3 = SR, 4 = Analista, 5 = Agente',
   })
   level: LevelType;
 

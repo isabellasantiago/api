@@ -9,6 +9,9 @@ export class HardSkillsService {
   ) {}
 
   async getAllHardSkills(): Promise<HardSkillsModel[]> {
-    return await this.hardSkillsRepository.getAllHardSkills();
+    const hardskills = await this.hardSkillsRepository.getAllHardSkills();
+
+    if(!hardskills) throw new Error('None hard skills were found')
+    return hardskills
   }
 }

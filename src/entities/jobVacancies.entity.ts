@@ -62,11 +62,9 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   })
   cityAndState: string;
 
-  @Column({
-    type: DataType.ENUM({
-      values: ['0 - Estagiário', '1 - JUNIOR', '2 - PLENO', '3 - SENIOR'],
-    }),
-  })
+  @Column({type: DataType.ENUM({
+    values: ['0-Estágio', '1-JR', '2-PL', '3-SR', '4-Analista', '5- Agente']
+  })})
   level: LevelType;
 
   @Column({

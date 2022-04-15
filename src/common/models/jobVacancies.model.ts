@@ -29,7 +29,9 @@ export class JobVacanciesModel {
   @ApiProperty()
   cityAndState: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: '0-Estágio, 1-JR, 2-PL, 3-SR, 4-Analista, 5- Agente'
+  })
   level: LevelType;
 
   @ApiProperty()

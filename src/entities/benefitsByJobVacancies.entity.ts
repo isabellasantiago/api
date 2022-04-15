@@ -33,9 +33,15 @@ export class BenefitsByJobVacanciesEntity extends Model<BenefitsByJobVacanciesEn
   @BelongsTo(() => JobBenefitsEntity)
   jobBenefits: JobBenefitsEntity;
 
-  @Column
-  createdAt: Date;
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
+    createdAt: Date;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   updatedAt: Date;
 }

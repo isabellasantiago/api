@@ -1,11 +1,16 @@
 import {
   AutoIncrement,
+  BelongsToMany,
   Column,
   DataType,
+  HasMany,
+  HasOne,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { CandidateEntity } from './candidate.entity';
+import { SoftSkillsByCandidateEntity } from './softSkillsByCandidate.entity';
 
 @Table({ tableName: 'SoftSkills' })
 export class SoftSkillsEntity extends Model<SoftSkillsEntity> {
@@ -31,4 +36,10 @@ export class SoftSkillsEntity extends Model<SoftSkillsEntity> {
     defaultValue: DataType.NOW,
   })
   updatedAt: Date;
+
+  @HasOne(() => SoftSkillsByCandidateEntity)
+  softSkillsByCandidate: SoftSkillsByCandidateEntity;
+
+  @BelongsToMany(() => CandidateEntity, () => SoftSkillsByCandidateEntity)
+  candidate: CandidateEntity[];
 }
