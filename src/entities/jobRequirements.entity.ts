@@ -8,6 +8,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+
 import { RequirementsByJobVacanciesEntity } from './requirementsByJobVacancies.entity';
 
 @Table({ tableName: 'JobRequirements' })
@@ -28,7 +29,7 @@ export class JobRequirementsEntity extends Model<JobRequirementsEntity> {
     type: DataType.DATE,
     defaultValue: DataType.NOW
   })
-    createdAt: Date;
+  createdAt: Date;
 
   @Column({
     type: DataType.DATE,

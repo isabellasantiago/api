@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HardSkillsByCandidate', {
+    await queryInterface.createTable('LanguagesInformations', {
       id: {
         type: Sequelize.BIGINT,
         allowNull: false,
@@ -13,8 +13,17 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      hardSkillsID: {
-        type: Sequelize.BIGINT,
+      languageName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      languageLevel: {
+        type: Sequelize.ENUM(
+          '1- Básico',
+          '2 Intermediário',
+          '3- Avançado',
+          '4- Fluente',
+        ),
         allowNull: false,
       },
       createdAt: {
@@ -31,6 +40,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HardSkillsByCandidate');
+    await queryInterface.dropTable('LanguagesInformations');
   },
 };

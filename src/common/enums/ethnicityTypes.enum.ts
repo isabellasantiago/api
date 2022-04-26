@@ -1,6 +1,6 @@
 export enum EthnicityTypes {
-  BLACK = 0,
-  INDIGENOUS = 1,
-  ASIAN = 2,
-  WHITE = 3,
+  BLACK = 1,
+  INDIGENOUS = 2,
+  ASIAN = 3,
+  WHITE = 4,
 }

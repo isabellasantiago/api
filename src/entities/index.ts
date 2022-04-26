@@ -8,3 +8,8 @@ export * from './hardSkills.entity';
 export * from './softSkills.entity';
 export * from './softSkillsByJobVacancies.entity';
 export * from './hardSkillsByJobVacancies.entity';
+export * from './academicsInformations.entity';
+export * from './softSkillsByCandidate.entity';
+export * from './hardSkillsByCandidate.entity';
+export * from './personalData.entity';
+export * from './previousJobs.entity';

@@ -20,7 +20,9 @@ export class JobVacanciesModel {
   @ApiProperty()
   salary: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: '1-PJ, 2- CLT, 3- CLT OU PJ, 4- OUTROS',
+  })
   contractType: ContractTypes;
 
   @ApiProperty()
@@ -30,14 +32,19 @@ export class JobVacanciesModel {
   cityAndState: string;
 
   @ApiProperty({
-    description: '0-Estágio, 1-JR, 2-PL, 3-SR, 4-Analista, 5- Agente'
+    description: '1-Estágio, 2-JR, 3-PL, 4-SR, 5-Analista, 6-Agente',
   })
   level: LevelType;
 
-  @ApiProperty()
+  @ApiProperty({
+    description:
+      '1- Mulher, 2- Mulher Trans, 3- Pessoas Trans, 4- Mulher Cis e Pessoas Trans',
+  })
   gender: GenderTypes;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: '1 - Negra, 2 - Indígena, 3- Amarela, 4 - Branca',
+  })
   ethnicity: EthnicityTypes;
 
   @ApiProperty()

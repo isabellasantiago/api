@@ -10,8 +10,10 @@ import {
   HasMany,
   BelongsToMany,
 } from 'sequelize-typescript';
+import { AcademicsInformationsEntity } from './academicsInformations.entity';
 import { HardSkillsEntity } from './hardSkills.entity';
-import { HardSkillsByCandidate } from './hardSkillsByCandidate.entity';
+import { HardSkillsByCandidateEntity } from './hardSkillsByCandidate.entity';
+import { LanguagesInformationEntity } from './languagesInformation.entity';
 import { PreviousJobsEntity } from './previousJobs.entity';
 import { SoftSkillsEntity } from './softSkills.entity';
 import { SoftSkillsByCandidateEntity } from './softSkillsByCandidate.entity';
@@ -57,13 +59,13 @@ export class CandidateEntity extends Model<CandidateEntity> {
 
   @Column({
     type: DataType.DATE,
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
   })
-    createdAt: Date;
+  createdAt: Date;
 
   @Column({
     type: DataType.DATE,
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
   })
   updatedAt: Date;
 
@@ -71,14 +73,19 @@ export class CandidateEntity extends Model<CandidateEntity> {
     type: DataType.DATE,
   })
   deletedAt: Date;
-  
+
   @BelongsToMany(() => SoftSkillsEntity, () => SoftSkillsByCandidateEntity)
   softSkills: SoftSkillsEntity[];
 
-  @BelongsToMany(() => HardSkillsEntity, () => HardSkillsByCandidate)
+  @BelongsToMany(() => HardSkillsEntity, () => HardSkillsByCandidateEntity)
   hardSkills: HardSkillsEntity[];
 
   @HasMany(() => PreviousJobsEntity)
   previousJobs: PreviousJobsEntity[];
 
+  @HasMany(() => LanguagesInformationEntity)
+  languangesInformations: LanguagesInformationEntity[];
+
+  @HasMany(() => AcademicsInformationsEntity)
+  academicsInformations: AcademicsInformationsEntity[];
 }

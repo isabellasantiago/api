@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('AcademicInformations', {
+    await queryInterface.createTable('PreviousJobs', {
       id: {
         type: Sequelize.BIGINT,
         allowNull: false,
@@ -13,27 +13,35 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      instituitionName: {
+      previousCompanyName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      courseName: {
+      role: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      academicFormation: {
+      level: {
         type: Sequelize.ENUM(
-          '0- Ensino médio/regular',
-          '1- Técnologo',
-          '2- Ensino Superior',
-          '3- Pós graduação',
-          '4- Mestrado',
-          '5- Doutorado',
+          '1-Estágio',
+          '2-JR',
+          '3-PL',
+          '4-SR',
+          '5-Analista',
+          '6- Agente',
         ),
         allowNull: false,
       },
-      academicFormationStatus: {
-        type: Sequelize.ENUM('0- Cursando', '2- Concluido', '3 - Trancado'),
+      fromDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      toDate: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      jobDescription: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
@@ -50,6 +58,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('AcademicInformations');
+    await queryInterface.dropTable('PreviousJobs');
   },
 };

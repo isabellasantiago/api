@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('SoftSkillsByCandidate', {
       id: {
         type: Sequelize.BIGINT,
@@ -9,7 +9,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      candidateID:{
+      candidateID: {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
@@ -27,10 +27,10 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
-    })
+    });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('SoftSkillsByCandidate')
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('SoftSkillsByCandidate');
+  },
 };

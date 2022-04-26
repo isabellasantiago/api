@@ -37,9 +37,6 @@ export class SoftSkillsEntity extends Model<SoftSkillsEntity> {
   })
   updatedAt: Date;
 
-  @HasOne(() => SoftSkillsByCandidateEntity)
-  softSkillsByCandidate: SoftSkillsByCandidateEntity;
-
   @BelongsToMany(() => CandidateEntity, () => SoftSkillsByCandidateEntity)
-  candidate: CandidateEntity[];
+  candidates: CandidateEntity[];
 }

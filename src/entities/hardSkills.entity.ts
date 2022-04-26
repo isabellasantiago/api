@@ -1,6 +1,5 @@
 import {
   AutoIncrement,
-  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
@@ -9,7 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { CandidateEntity } from './candidate.entity';
-import { HardSkillsByCandidate } from './hardSkillsByCandidate.entity';
+import { HardSkillsByCandidateEntity } from './hardSkillsByCandidate.entity';
 
 @Table({ tableName: 'HardSkills' })
 export class HardSkillsEntity extends Model<HardSkillsEntity> {
@@ -27,16 +26,16 @@ export class HardSkillsEntity extends Model<HardSkillsEntity> {
 
   @Column({
     type: DataType.DATE,
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
   })
-    createdAt: Date;
+  createdAt: Date;
 
   @Column({
     type: DataType.DATE,
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
   })
   updatedAt: Date;
 
-  @BelongsToMany(() => CandidateEntity, () => HardSkillsByCandidate)
+  @BelongsToMany(() => CandidateEntity, () => HardSkillsByCandidateEntity)
   candidates: CandidateEntity[];
 }

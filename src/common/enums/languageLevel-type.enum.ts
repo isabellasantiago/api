@@ -1,6 +1,6 @@
 export enum LanguageLevelType {
-    BASIC = 0,
-    INTERMEDIARY = 1,
-    ADVANCED = 2,
-    FLUENTLY = 3,
+  BASIC = 1,
+  INTERMEDIARY = 2,
+  ADVANCED = 3,
+  FLUENTLY = 4,
 }

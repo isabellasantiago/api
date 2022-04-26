@@ -19,7 +19,7 @@ export class CreateJobVacanciesDTO {
   salary: number;
 
   @ApiProperty({
-    description: '0 = PJ, 1 = CLT, 2 = PJ OU CLT, 3 = OUTROS',
+    description: '1- PJ, 2- CLT, 3-PJ OU CLT, 4- OUTROS',
   })
   contractType: ContractTypes;
 
@@ -30,18 +30,19 @@ export class CreateJobVacanciesDTO {
   about: string;
 
   @ApiProperty({
-    description: '0 = Estágio, 1 = JR, 2 = PL, 3 = SR, 4 = Analista, 5 = Agente',
+    description:
+      '1 = Estágio, 2 = JR, 3 = PL, 4 = SR, 5 = Analista, 6 = Agente',
   })
   level: LevelType;
 
   @ApiProperty({
     description:
-      '0 = Mulher Cis, 1= Mulher Trans, 2= Pessoas Trans, 3 = Mulher Cis e Pessoas Trans',
+      '1 = Mulher Cis, 2= Mulher Trans, 3= Pessoas Trans, 4 = Mulher Cis e Pessoas Trans',
   })
   gender?: GenderTypes;
 
   @ApiProperty({
-    description: '0 = Negra, 1 = Indigena, 2 = Amarela',
+    description: '1 = Negra, 2 = Indigena, 3 = Amarela',
   })
   ethnicity?: EthnicityTypes;
 

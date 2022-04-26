@@ -6,10 +6,15 @@ import { UserRepositoryService } from './services/user/user.repository.service';
 import { ValidatorRepositoryService } from './validator/validator.repository.service';
 import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
 import {
+  AcademicsInformationsEntity,
   CandidateEntity,
+  HardSkillsByCandidateEntity,
   JobRequirementsEntity,
   JobVacanciesEntity,
+  PersonalDataEntity,
+  PreviousJobsEntity,
   RequirementsByJobVacanciesEntity,
+  SoftSkillsByCandidateEntity,
 } from 'src/entities';
 import { CandidateRepositoryService } from './services/candidate/candidate.repository.service';
 import { CompanyRepositoryService } from './services/company/company.repository.service';
@@ -23,6 +28,8 @@ import { HardSkillsByJobVacanciesEntity } from 'src/entities/hardSkillsByJobVaca
 import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacancies.repository.service';
 import { HardSkillsRepositoryService } from './services/hardSkills/hardSkills.repository.service';
 import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.repository.service';
+import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
+import { CvRepositoryService } from './services/cv/cv.repository.service';
 
 @Module({
   imports: [
@@ -39,6 +46,12 @@ import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.re
       HardSkillsEntity,
       SoftSkillsByJobVacanciesEntity,
       HardSkillsByJobVacanciesEntity,
+      SoftSkillsByCandidateEntity,
+      HardSkillsByCandidateEntity,
+      PersonalDataEntity,
+      PreviousJobsEntity,
+      LanguagesInformationEntity,
+      AcademicsInformationsEntity,
     ]),
     InfraModule,
   ],
@@ -51,6 +64,7 @@ import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.re
     JobVacanciesRepositoryService,
     HardSkillsRepositoryService,
     SoftSkillsRepositoryService,
+    CvRepositoryService,
   ],
   exports: [
     UserRepositoryService,
@@ -61,6 +75,7 @@ import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.re
     JobVacanciesRepositoryService,
     HardSkillsRepositoryService,
     SoftSkillsRepositoryService,
+    CvRepositoryService,
   ],
 })
 export class RepositoryModule {}
