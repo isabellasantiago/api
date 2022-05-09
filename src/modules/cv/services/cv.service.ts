@@ -7,7 +7,7 @@ import {
 import { PersonalDataModel } from 'src/common/models/personalData.model';
 import { CandidateRepositoryService } from 'src/repository/services/candidate/candidate.repository.service';
 import { CvRepositoryService } from 'src/repository/services/cv/cv.repository.service';
-import { CreateCvDTO } from '../dto/create-cv-.dto';
+import { CreateOrUpdateCvDTO } from '../dto/create-cv.dto';
 import { ICv } from '../dto/cv-complete.output';
 
 export class CvService {
@@ -18,7 +18,7 @@ export class CvService {
     private readonly candidateRepository: CandidateRepositoryService,
   ) {}
 
-  async createCv(data: CreateCvDTO): Promise<PersonalDataModel> {
+  async createCv(data: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
     const candidate = await this.candidateRepository.getCandidateByID(
       data.candidateID,
     );
@@ -80,5 +80,67 @@ export class CvService {
     };
 
     return cv;
+  }
+
+  async updateCv(data: CreateOrUpdateCvDTO): Promise<ICv> {
+    const {
+      candidateID,
+      imageURL,
+      linkedinURL,
+      naturalness,
+      gender,
+      birthDate,
+      state,
+      city,
+      phone,
+      ethnicity,
+      isPcd,
+      allowsWhatsapp,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+      softSkills,
+      hardSkills,
+    } = data;
+    const candidate = await this.candidateRepository.getCandidateByID(
+      candidateID,
+    );
+
+    if (!candidate) throw new NotFoundException('Candidate not found');
+
+    const cvAlreadyExists = await this.cvRepository.getPersonalData(
+      candidateID,
+    );
+
+    if (!cvAlreadyExists) throw new NotFoundException('Curriculum not found');
+
+
+    return await this.cvRepository.updateCv({
+      candidateID,
+      imageURL,
+      linkedinURL,
+      naturalness,
+      gender,
+      birthDate,
+      state,
+      city,
+      phone,
+      ethnicity,
+      isPcd,
+      allowsWhatsapp,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+      softSkills,
+      hardSkills,
+    })
   }
 }

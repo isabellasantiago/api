@@ -4,12 +4,10 @@ import { EthnicityTypes } from 'src/common/enums/ethnicityTypes.enum';
 import { GenderTypesCv } from 'src/common/enums/genderTypesCv.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
 import { AcademicsInformationsModel } from 'src/common/models/academicsInformation.model';
-import { HardSkillsModel } from 'src/common/models/hardSkills.model';
 import { LanguagesInformationModel } from 'src/common/models/languagesInformation.model';
 import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
-import { SoftSkillsModel } from 'src/common/models/softSkills.model';
 
-export class CreateCvDTO {
+export class CreateOrUpdateCvDTO {
   @ApiProperty()
   candidateID: number;
 

@@ -5,10 +5,11 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   ValidationPipe,
 } from '@nestjs/common';
 import { PersonalDataModel } from 'src/common/models/personalData.model';
-import { CreateCvDTO } from '../dto/create-cv-.dto';
+import { CreateOrUpdateCvDTO } from '../dto/create-cv.dto';
 import { ICv } from '../dto/cv-complete.output';
 import { CvService } from '../services/cv.service';
 
@@ -18,7 +19,7 @@ export class CvController {
 
   @Post('/')
   async createCv(
-    @Body(new ValidationPipe({ transform: true })) data: CreateCvDTO,
+    @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
   ): Promise<PersonalDataModel> {
     return await this.cvService.createCv(data);
   }
@@ -31,5 +32,10 @@ export class CvController {
     },
   ): Promise<ICv> {
     return await this.cvService.getCompleteCv(param.candidateID);
+  }
+
+  @Put('/')
+  async updateCv(@Body(new ValidationPipe({ transform: true})) data: CreateOrUpdateCvDTO): Promise<ICv> {
+    return await this.cvService.updateCv(data)
   }
 }

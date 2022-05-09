@@ -16,7 +16,8 @@ import {
   SoftSkillsEntity,
 } from 'src/entities';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
-import { CreateCvDTO } from 'src/modules/cv/dto/create-cv-.dto';
+import { CreateOrUpdateCvDTO } from 'src/modules/cv/dto/create-cv.dto';
+import { ICv } from 'src/modules/cv/dto/cv-complete.output';
 
 export class CvRepositoryService {
   constructor(
@@ -62,7 +63,7 @@ export class CvRepositoryService {
     previousJobs,
     softSkills,
     hardSkills,
-  }: CreateCvDTO): Promise<PersonalDataModel> {
+  }: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
 
     try {
@@ -148,7 +149,7 @@ export class CvRepositoryService {
           softSkills.map(async (softSkill) => {
             const convertedSoftSkill = softSkill.toUpperCase();
             const softSkillExists = await this.softSkillsEntity.findOne({
-              where: { name: softSkill },
+              where: { name: convertedSoftSkill },
             });
 
             if (
@@ -159,15 +160,16 @@ export class CvRepositoryService {
                 candidateID,
                 softSkillsID: softSkillExists.id,
               });
-            }
-            const softSkillCreated = await this.softSkillsEntity.create({
-              name: convertedSoftSkill,
-            });
+            } else {
+              const softSkillCreated = await this.softSkillsEntity.create({
+                name: convertedSoftSkill,
+              });
 
-            await this.softSkillsByCandidateEntity.create({
-              candidateID,
-              softSkillsID: softSkillCreated.id,
-            });
+              await this.softSkillsByCandidateEntity.create({
+                candidateID,
+                softSkillsID: softSkillCreated.id,
+              });
+            }
           }),
         );
       }
@@ -175,7 +177,6 @@ export class CvRepositoryService {
       if (hardSkills) {
         await Promise.all(
           hardSkills.map(async (hardSkill) => {
-            console.log(hardSkill);
             const convertedHardSkill = hardSkill.toUpperCase();
             const hardSkillExists = await this.hardSkillsEntity.findOne({
               where: { name: convertedHardSkill },
@@ -189,15 +190,16 @@ export class CvRepositoryService {
                 candidateID,
                 hardSkillsID: hardSkillExists.id,
               });
-            }
-            const hardSkillCreated = await this.hardSkillsEntity.create({
-              name: convertedHardSkill,
-            });
+            } else {
+              const hardSkillCreated = await this.hardSkillsEntity.create({
+                name: convertedHardSkill,
+              });
 
-            await this.hardSkillsByCandidateEntity.create({
-              candidateID,
-              hardSkillsID: hardSkillCreated.id,
-            });
+              await this.hardSkillsByCandidateEntity.create({
+                candidateID,
+                hardSkillsID: hardSkillCreated.id,
+              });
+            }
           }),
         );
       }
@@ -299,5 +301,178 @@ export class CvRepositoryService {
       return skillsByCandidate;
     }
     return [];
+  }
+
+  async updateCv({
+    candidateID,
+    imageURL,
+    linkedinURL,
+    naturalness,
+    gender,
+    birthDate,
+    state,
+    city,
+    phone,
+    ethnicity,
+    isPcd,
+    allowsWhatsapp,
+    field,
+    contractType,
+    level,
+    role,
+    academics,
+    languages,
+    previousJobs,
+    softSkills,
+    hardSkills,
+  }): Promise<ICv> {
+    const personalData = await this.personalDataEntity.findOne({
+      where: { candidateID },
+    });
+
+    await personalData.update({
+      imageURL,
+      linkedinURL,
+      naturalness,
+      gender,
+      birthDate,
+      state,
+      city,
+      phone,
+      ethnicity,
+      isPcd,
+      allowsWhatsapp,
+      field,
+      contractType,
+      level,
+      role,
+    });
+
+    const academicsArray = await this.getAllAcademics(candidateID);
+    await Promise.all(
+      academicsArray.map(
+        async (academicInfo) =>
+          await this.academicsEntity.destroy({
+            where: { id: academicInfo.id },
+          }),
+      ),
+    );
+
+    await Promise.all(
+      academics.map(async (academic) => {
+        await this.academicsEntity.create(academic);
+      }),
+    );
+
+    const languagesArray = await this.getAllLanguages(candidateID);
+    await Promise.all(
+      languagesArray.map(
+        async (language) =>
+          await this.languagesEntity.destroy({ where: { id: language.id } }),
+      ),
+    );
+
+    await Promise.all(
+      languages.map(
+        async (language) => await this.languagesEntity.create(language),
+      ),
+    );
+
+    const previousJobsArray = await this.getAllPreviousJobs(candidateID)
+    await Promise.all(
+      previousJobsArray.map(async (previousJob) => await this.previousJobsEntity.destroy({ where: {id: previousJob.id}}))
+    )
+
+    await Promise.all(
+      previousJobs.map(async (previousJob) => await this.previousJobsEntity.create(previousJob))
+    )    
+
+    if (softSkills) {
+      const softSkillsByCandidate = await this.softSkillsByCandidateEntity.findAll({where: {candidateID}})
+      await Promise.all(
+        softSkillsByCandidate.map(async (skill) => await this.softSkillsByCandidateEntity.destroy({ where: { id: skill.id }}))
+      )
+
+      await Promise.all(
+        softSkills.map(async (softSkill) => {
+          const convertedSoftSkill = softSkill.toUpperCase();
+          const softSkillExists = await this.softSkillsEntity.findOne({
+            where: { name: convertedSoftSkill },
+          });
+
+          if (
+            softSkillExists &&
+            softSkillExists.name === convertedSoftSkill
+          ) {
+            await this.softSkillsByCandidateEntity.create({
+              candidateID,
+              softSkillsID: softSkillExists.id,
+            });
+          } else {
+            const softSkillCreated = await this.softSkillsEntity.create({
+              name: convertedSoftSkill,
+            });
+
+            await this.softSkillsByCandidateEntity.create({
+              candidateID,
+              softSkillsID: softSkillCreated.id,
+            });
+          }
+        }),
+      );
+    }
+
+    if (hardSkills) {
+      const hardSkillsByCandidate = await this.hardSkillsByCandidateEntity.findAll({where: {candidateID}})
+      await Promise.all(
+        hardSkillsByCandidate.map(async (skill) => await this.hardSkillsByCandidateEntity.destroy({ where: { id: skill.id }}))
+      )
+      await Promise.all(
+        hardSkills.map(async (hardSkill) => {
+          const convertedHardSkill = hardSkill.toUpperCase();
+          const hardSkillExists = await this.hardSkillsEntity.findOne({
+            where: { name: convertedHardSkill },
+          });
+
+          if (
+            hardSkillExists &&
+            hardSkillExists.name === convertedHardSkill
+          ) {
+            await this.hardSkillsByCandidateEntity.create({
+              candidateID,
+              hardSkillsID: hardSkillExists.id,
+            });
+          } else {
+            const hardSkillCreated = await this.hardSkillsEntity.create({
+              name: convertedHardSkill,
+            });
+
+            await this.hardSkillsByCandidateEntity.create({
+              candidateID,
+              hardSkillsID: hardSkillCreated.id,
+            });
+          }
+        }),
+      );
+    }
+
+    const personalDataUpdated = await this.getPersonalData(candidateID)
+    const academicUpdated = await this.getAllAcademics(candidateID)
+    const languageUpdated = await this.getAllLanguages(candidateID)
+    const previousJobsUpdated = await this.getAllPreviousJobs(candidateID)
+    const softSkillsUpdated = await this.getAllSoftSkills(candidateID)
+    const hardSkillsUpdated = await this.getAllHardSkills(candidateID)
+
+
+    const resume = {
+      personalData: personalDataUpdated,
+      academics: academicUpdated,
+      languages: languageUpdated,
+      previousJobs: previousJobsUpdated,
+      softSkills: softSkillsUpdated,
+      hardSkills: hardSkillsUpdated,
+    }
+
+    return resume;
   }
 }

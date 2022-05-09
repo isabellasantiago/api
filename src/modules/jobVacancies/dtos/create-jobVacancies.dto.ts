@@ -53,14 +53,14 @@ export class CreateJobVacanciesDTO {
   acceptsAllLevels: boolean;
 
   @ApiProperty()
-  requirements?: JobRequirementsModel[];
+  requirements?: Array<string>;
 
   @ApiProperty()
-  benefits?: JobBenefitsModel[];
+  benefits?: Array<string>;
 
   @ApiProperty()
-  softSkills?: SoftSkillsModel[];
+  softSkills?: Array<string>;
 
   @ApiProperty()
-  hardSkills?: HardSkillsModel[];
+  hardSkills?: Array<string>;
 }

@@ -75,10 +75,10 @@ export class JobVacanciesRepositoryService {
 
       await Promise.all(
         requirements.map(async (requirement) => {
-          const requirementConverted = requirement.name.toUpperCase();
+          const requirementConverted = requirement.toUpperCase();
           const requirementAlreadyExists =
             await this.jobRequirementsEntity.findOne({
-              where: { name: requirement.name },
+              where: { name: requirementConverted },
             });
 
           if (
@@ -102,7 +102,7 @@ export class JobVacanciesRepositoryService {
 
       await Promise.all(
         benefits.map(async (benefit) => {
-          const benefitConverted = benefit.name.toUpperCase();
+          const benefitConverted = benefit.toUpperCase();
           const benefitAlreadyExists = await this.jobBenefitsEntity.findOne({
             where: { name: benefitConverted },
           });
@@ -127,53 +127,65 @@ export class JobVacanciesRepositoryService {
         }),
       );
 
-      await Promise.all(
-        softSkills.map(async (softSkill) => {
-          const convertedSoftSkill = softSkill.name.toUpperCase();
-          const softSkillExists = await this.softSkillsEntity.findOne({
-            where: { name: softSkill.name },
-          });
-
-          if (softSkillExists && softSkillExists.name === convertedSoftSkill) {
-            await this.softSkillsByJobVacancies.create({
-              jobVacanciesID: jobVacancie.id,
-              softSkillsID: softSkillExists.id,
+      if (softSkills) {
+        await Promise.all(
+          softSkills.map(async (softSkill) => {
+            const convertedSoftSkill = softSkill.toUpperCase();
+            const softSkillExists = await this.softSkillsEntity.findOne({
+              where: { name: convertedSoftSkill },
             });
-          }
-          const softSkillCreated = await this.softSkillsEntity.create({
-            ...softSkill,
-            name: convertedSoftSkill,
-          });
-          await this.softSkillsByJobVacancies.create({
-            jobVacanciesID: jobVacancie.id,
-            softSkillsID: softSkillCreated.id,
-          });
-        }),
-      );
 
-      await Promise.all(
-        hardSkills.map(async (hardSkill) => {
-          const convertedSoftSkill = hardSkill.name.toUpperCase();
-          const softSkillExists = await this.hardSkillsEntity.findOne({
-            where: { name: hardSkill.name },
-          });
+            if (
+              softSkillExists &&
+              softSkillExists.name === convertedSoftSkill
+            ) {
+              await this.softSkillsByJobVacancies.create({
+                jobVacanciesID: jobVacancie.id,
+                softSkillsID: softSkillExists.id,
+              });
+            } else {
+              const softSkillCreated = await this.softSkillsEntity.create({
+                name: convertedSoftSkill,
+              });
 
-          if (softSkillExists && softSkillExists.name === convertedSoftSkill) {
-            await this.hardSkillsByJobVacancies.create({
-              jobVacanciesID: jobVacancie.id,
-              hardSkillsID: softSkillExists.id,
+              await this.softSkillsByJobVacancies.create({
+                jobVacanciesID: jobVacancie.id,
+                softSkillsID: softSkillCreated.id,
+              });
+            }
+          }),
+        );
+      }
+
+      if (hardSkills) {
+        await Promise.all(
+          hardSkills.map(async (hardSkill) => {
+            const convertedHardSkill = hardSkill.toUpperCase();
+            const hardSkillExists = await this.hardSkillsEntity.findOne({
+              where: { name: convertedHardSkill },
             });
-          }
-          const hardSkillCreated = await this.hardSkillsEntity.create({
-            ...hardSkill,
-            name: convertedSoftSkill,
-          });
-          await this.hardSkillsByJobVacancies.create({
-            jobVacanciesID: jobVacancie.id,
-            hardSkillsID: hardSkillCreated.id,
-          });
-        }),
-      );
+
+            if (
+              hardSkillExists &&
+              hardSkillExists.name === convertedHardSkill
+            ) {
+              await this.hardSkillsByJobVacancies.create({
+                jobVacanciesID: jobVacancie.id,
+                hardSkillsID: hardSkillExists.id,
+              });
+            } else {
+              const hardSkillCreated = await this.hardSkillsEntity.create({
+                name: convertedHardSkill,
+              });
+
+              await this.hardSkillsByJobVacancies.create({
+                jobVacanciesID: jobVacancie.id,
+                hardSkillsID: hardSkillCreated.id,
+              });
+            }
+          }),
+        );
+      }
 
       transaction.commit();
       return jobVacancie;
