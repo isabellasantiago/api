@@ -33,10 +33,16 @@ export class HardSkillsByJobVacanciesEntity extends Model<HardSkillsByJobVacanci
 
   @BelongsTo(() => HardSkillsEntity)
   hardSkills: HardSkillsEntity;
+  
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
+    createdAt: Date;
 
-  @Column
-  createdAt: Date;
-
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   updatedAt: Date;
 }

@@ -1,6 +1,8 @@
 export enum LevelType {
-  INTERN = 0,
-  JR = 1,
-  PL = 2,
-  SR = 3,
+  INTERN = 1,
+  JR = 2,
+  PL = 3,
+  SR = 4,
+  ANALYST = 5,
+  AGENT = 6,
 }

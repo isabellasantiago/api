@@ -8,6 +8,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+
 import { RequirementsByJobVacanciesEntity } from './requirementsByJobVacancies.entity';
 
 @Table({ tableName: 'JobRequirements' })
@@ -24,10 +25,16 @@ export class JobRequirementsEntity extends Model<JobRequirementsEntity> {
   })
   name?: string;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   createdAt: Date;
 
-  @Column
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW
+  })
   updatedAt: Date;
 
   @HasOne(() => RequirementsByJobVacanciesEntity)

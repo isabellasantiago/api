@@ -69,14 +69,16 @@ export class CompanyEntity extends Model<CompanyEntity> {
     type: DataType.STRING,
   })
   type: CompanyTypes;
-
+  
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
-  createdAt: Date;
+    createdAt: Date;
 
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
   updatedAt: Date;
 

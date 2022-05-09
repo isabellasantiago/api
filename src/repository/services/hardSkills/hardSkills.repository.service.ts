@@ -2,13 +2,13 @@ import { InjectModel } from '@nestjs/sequelize';
 import { HardSkillsModel } from 'src/common/models/hardSkills.model';
 import { HardSkillsEntity } from 'src/entities/';
 
-export class SoftSkillsRepositoryService {
+export class HardSkillsRepositoryService {
   constructor(
     @InjectModel(HardSkillsEntity)
-    private readonly softSkillsEntity: typeof HardSkillsEntity,
+    private readonly hardSkillsEntity: typeof HardSkillsEntity,
   ) {}
 
-  async getAllSoftSkills(): Promise<HardSkillsModel[]> {
-    return await this.softSkillsEntity.findAll();
+  async getAllHardSkills(): Promise<HardSkillsModel[]> {
+    return await this.hardSkillsEntity.findAll();
   }
 }

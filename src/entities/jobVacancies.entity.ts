@@ -47,7 +47,7 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
 
   @Column({
     type: DataType.ENUM({
-      values: ['0 - PJ', '1 - CLT', '2 - PJ ou CLT', '3 - OUTROS'],
+      values: ['1 - PJ', '2 - CLT', '3 - PJ ou CLT', '4 - OUTROS'],
     }),
   })
   contractType: ContractTypes;
@@ -64,7 +64,7 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
 
   @Column({
     type: DataType.ENUM({
-      values: ['0 - Estagiário', '1 - JUNIOR', '2 - PLENO', '3 - SENIOR'],
+      values: ['1-Estágio', '2-JR', '3-PL', '4-SR', '5-Analista', '6- Agente'],
     }),
   })
   level: LevelType;
@@ -72,10 +72,10 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   @Column({
     type: DataType.ENUM({
       values: [
-        '0 - MULHER',
-        '1 - MULHER TRANS',
-        '2 - PESSOAS TRANS',
-        '3 - MULHER (CIS) E PESSOAS TRANS',
+        '1 - MULHER',
+        '2 - MULHER TRANS',
+        '3 - PESSOAS TRANS',
+        '4 - MULHER (CIS) E PESSOAS TRANS',
       ],
     }),
   })
@@ -83,7 +83,7 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
 
   @Column({
     type: DataType.ENUM({
-      values: ['0 - NEGRO', '1 - INDÍGENA', '3 - AMARELO'],
+      values: ['1 - NEGRA', '2 - INDÍGENA', '3 - AMARELO'],
     }),
   })
   ethnicity: EthnicityTypes;

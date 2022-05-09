@@ -40,11 +40,13 @@ export class UserEntity extends Model<UserEntity> {
 
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
-  createdAt: Date;
+    createdAt: Date;
 
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
   updatedAt: Date;
 

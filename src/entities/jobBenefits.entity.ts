@@ -26,11 +26,13 @@ export class JobBenefitsEntity extends Model<JobBenefitsEntity> {
 
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
-  createdAt: Date;
+    createdAt: Date;
 
   @Column({
     type: DataType.DATE,
+    defaultValue: DataType.NOW
   })
   updatedAt: Date;
 
