@@ -90,4 +90,12 @@ export class JobVacancieController {
   ): Promise<JobVacanciesModel> {
     return await this.jobVacanciesService.pauseJobVacancie(param.id);
   }
+
+  @Put('/:id')
+  async updateJobVacancie(
+    @Param(new ValidationPipe({ transform: true })) param: { id: number },
+    @Body(new ValidationPipe({transform: true})) data: CreateJobVacanciesDTO) {
+    console.log(param.id)
+    return await this.jobVacanciesService.updateJobVacancie(param.id, data)
+  }
 }

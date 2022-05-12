@@ -38,6 +38,7 @@ export class JobVacanciesRepositoryService {
     private readonly softSkillsByJobVacancies: typeof SoftSkillsByJobVacanciesEntity,
     @InjectModel(HardSkillsByJobVacanciesEntity)
     private readonly hardSkillsByJobVacancies: typeof HardSkillsByJobVacanciesEntity,
+    @InjectModel(CompanyEntity) private readonly companyEntity: typeof CompanyEntity,
   ) {}
 
   async createJobVacancies({
@@ -59,136 +60,141 @@ export class JobVacanciesRepositoryService {
   }: CreateJobVacanciesDTO): Promise<JobVacanciesModel> {
     const transaction = await this.jobVacanciesEntity.sequelize.transaction();
     try {
-      const jobVacancie = await this.jobVacanciesEntity.create({
-        companyID,
-        title,
-        salary,
-        contractType,
-        about,
-        cityAndState,
-        level,
-        gender,
-        ethnicity,
-        pcd,
-        acceptsAllLevels,
-      });
+      const company = await this.companyEntity.findByPk(companyID);
 
-      await Promise.all(
-        requirements.map(async (requirement) => {
-          const requirementConverted = requirement.toUpperCase();
-          const requirementAlreadyExists =
-            await this.jobRequirementsEntity.findOne({
-              where: { name: requirementConverted },
+      if(company) {
+        const jobVacancie = await this.jobVacanciesEntity.create({
+          companyID,
+          title,
+          salary,
+          contractType,
+          about,
+          cityAndState,
+          level,
+          gender,
+          ethnicity,
+          pcd,
+          acceptsAllLevels,
+        });
+  
+        await Promise.all(
+          requirements.map(async (requirement) => {
+            const requirementConverted = requirement.toUpperCase();
+            const requirementAlreadyExists =
+              await this.jobRequirementsEntity.findOne({
+                where: { name: requirementConverted },
+              });
+  
+            if (
+              requirementAlreadyExists &&
+              requirementAlreadyExists.name === requirementConverted
+            ) {
+              await this.requirementsByJobVacanciesEntity.create({
+                jobVacanciesID: jobVacancie.id,
+                jobRequirementsID: requirementAlreadyExists.id,
+              });
+            }
+            const requirementCreated = await this.jobRequirementsEntity.create({
+              name: requirementConverted,
             });
-
-          if (
-            requirementAlreadyExists &&
-            requirementAlreadyExists.name === requirementConverted
-          ) {
             await this.requirementsByJobVacanciesEntity.create({
               jobVacanciesID: jobVacancie.id,
-              jobRequirementsID: requirementAlreadyExists.id,
+              jobRequirementsID: requirementCreated.id,
             });
-          }
-          const requirementCreated = await this.jobRequirementsEntity.create({
-            name: requirementConverted,
-          });
-          await this.requirementsByJobVacanciesEntity.create({
-            jobVacanciesID: jobVacancie.id,
-            jobRequirementsID: requirementCreated.id,
-          });
-        }),
-      );
-
-      await Promise.all(
-        benefits.map(async (benefit) => {
-          const benefitConverted = benefit.toUpperCase();
-          const benefitAlreadyExists = await this.jobBenefitsEntity.findOne({
-            where: { name: benefitConverted },
-          });
-
-          if (
-            benefitAlreadyExists &&
-            benefitAlreadyExists.name === benefitConverted
-          ) {
+          }),
+        );
+  
+        await Promise.all(
+          benefits.map(async (benefit) => {
+            const benefitConverted = benefit.toUpperCase();
+            const benefitAlreadyExists = await this.jobBenefitsEntity.findOne({
+              where: { name: benefitConverted },
+            });
+  
+            if (
+              benefitAlreadyExists &&
+              benefitAlreadyExists.name === benefitConverted
+            ) {
+              await this.benefitsByJobVacanciesEntity.create({
+                jobVacanciesID: jobVacancie.id,
+                jobBenefitsID: benefitAlreadyExists.id,
+              });
+            }
+  
+            const benefitsCreated = await this.jobBenefitsEntity.create({
+              name: benefitConverted,
+            });
             await this.benefitsByJobVacanciesEntity.create({
               jobVacanciesID: jobVacancie.id,
-              jobBenefitsID: benefitAlreadyExists.id,
+              jobBenefitsID: benefitsCreated.id,
             });
-          }
-
-          const benefitsCreated = await this.jobBenefitsEntity.create({
-            name: benefitConverted,
-          });
-          await this.benefitsByJobVacanciesEntity.create({
-            jobVacanciesID: jobVacancie.id,
-            jobBenefitsID: benefitsCreated.id,
-          });
-        }),
-      );
-
-      if (softSkills) {
-        await Promise.all(
-          softSkills.map(async (softSkill) => {
-            const convertedSoftSkill = softSkill.toUpperCase();
-            const softSkillExists = await this.softSkillsEntity.findOne({
-              where: { name: convertedSoftSkill },
-            });
-
-            if (
-              softSkillExists &&
-              softSkillExists.name === convertedSoftSkill
-            ) {
-              await this.softSkillsByJobVacancies.create({
-                jobVacanciesID: jobVacancie.id,
-                softSkillsID: softSkillExists.id,
-              });
-            } else {
-              const softSkillCreated = await this.softSkillsEntity.create({
-                name: convertedSoftSkill,
-              });
-
-              await this.softSkillsByJobVacancies.create({
-                jobVacanciesID: jobVacancie.id,
-                softSkillsID: softSkillCreated.id,
-              });
-            }
           }),
         );
+  
+        if (softSkills) {
+          await Promise.all(
+            softSkills.map(async (softSkill) => {
+              const convertedSoftSkill = softSkill.toUpperCase();
+              const softSkillExists = await this.softSkillsEntity.findOne({
+                where: { name: convertedSoftSkill },
+              });
+  
+              if (
+                softSkillExists &&
+                softSkillExists.name === convertedSoftSkill
+              ) {
+                await this.softSkillsByJobVacancies.create({
+                  jobVacanciesID: jobVacancie.id,
+                  softSkillsID: softSkillExists.id,
+                });
+              } else {
+                const softSkillCreated = await this.softSkillsEntity.create({
+                  name: convertedSoftSkill,
+                });
+  
+                await this.softSkillsByJobVacancies.create({
+                  jobVacanciesID: jobVacancie.id,
+                  softSkillsID: softSkillCreated.id,
+                });
+              }
+            }),
+          );
+        }
+  
+        if (hardSkills) {
+            await Promise.all(
+              hardSkills.map(async (hardSkill) => {
+              const convertedHardSkill = hardSkill.toUpperCase();
+              const hardSkillExists = await this.hardSkillsEntity.findOne({
+                where: { name: convertedHardSkill },
+              });
+  
+              if (
+                hardSkillExists &&
+                hardSkillExists.name === convertedHardSkill
+              ) {
+                await this.hardSkillsByJobVacancies.create({
+                  jobVacanciesID: jobVacancie.id,
+                  hardSkillsID: hardSkillExists.id,
+                });
+              } else {
+                const hardSkillCreated = await this.hardSkillsEntity.create({
+                  name: convertedHardSkill,
+                });
+  
+                await this.hardSkillsByJobVacancies.create({
+                  jobVacanciesID: jobVacancie.id,
+                  hardSkillsID: hardSkillCreated.id,
+                });
+              }
+            }),
+          );
+        }
+        transaction.commit();
+        return jobVacancie;
       }
 
-      if (hardSkills) {
-        await Promise.all(
-          hardSkills.map(async (hardSkill) => {
-            const convertedHardSkill = hardSkill.toUpperCase();
-            const hardSkillExists = await this.hardSkillsEntity.findOne({
-              where: { name: convertedHardSkill },
-            });
-
-            if (
-              hardSkillExists &&
-              hardSkillExists.name === convertedHardSkill
-            ) {
-              await this.hardSkillsByJobVacancies.create({
-                jobVacanciesID: jobVacancie.id,
-                hardSkillsID: hardSkillExists.id,
-              });
-            } else {
-              const hardSkillCreated = await this.hardSkillsEntity.create({
-                name: convertedHardSkill,
-              });
-
-              await this.hardSkillsByJobVacancies.create({
-                jobVacanciesID: jobVacancie.id,
-                hardSkillsID: hardSkillCreated.id,
-              });
-            }
-          }),
-        );
-      }
-
-      transaction.commit();
-      return jobVacancie;
+      
     } catch (err) {
       await transaction.rollback();
       console.log(err.message);
@@ -283,5 +289,203 @@ export class JobVacanciesRepositoryService {
       include: { model: HardSkillsEntity, required: true },
     });
     return hardSkills;
+  }
+
+  async updateJobVacancie({
+    companyID,
+    title,
+    salary,
+    contractType,
+    about,
+    cityAndState,
+    level,
+    gender,
+    ethnicity,
+    pcd,
+    acceptsAllLevels,
+    requirements,
+    benefits,
+    softSkills,
+    hardSkills,
+  }: CreateJobVacanciesDTO): Promise<JobVacanciesModel> {
+    const transaction = await this.companyEntity.sequelize.transaction();
+    try{
+      const company = this.companyEntity.findByPk(companyID);
+
+      if(company) {
+        const jobVacancie = await this.jobVacanciesEntity.findOne({ where: { companyID }})
+
+        if(jobVacancie){
+          await jobVacancie.update({
+            companyID,
+            title,
+            salary,
+            contractType,
+            about,
+            cityAndState,
+            level,
+            gender,
+            ethnicity,
+            pcd,
+            acceptsAllLevels,
+          });
+
+          if(requirements){
+            const requirementsArrays = await this.requirementsByJobVacanciesEntity.findAll({ where: {
+              jobVacanciesID: jobVacancie.id
+            }})
+
+            await Promise.all(
+              requirementsArrays.map(async (requirement) => await this.requirementsByJobVacanciesEntity.destroy({ where: { id: requirement.id}}))
+            )
+
+            await Promise.all(requirements.map(async (requirement) => {
+              const requirementConverted = requirement.toUpperCase();
+            const requirementAlreadyExists =
+              await this.jobRequirementsEntity.findOne({
+                where: { name: requirementConverted },
+              });
+  
+            if (
+              requirementAlreadyExists &&
+              requirementAlreadyExists.name === requirementConverted
+            ) {
+              await this.requirementsByJobVacanciesEntity.create({
+                jobVacanciesID: jobVacancie.id,
+                jobRequirementsID: requirementAlreadyExists.id,
+              });
+            }
+            const requirementCreated = await this.jobRequirementsEntity.create({
+              name: requirementConverted,
+            });
+              await this.requirementsByJobVacanciesEntity.create({
+                jobVacanciesID: jobVacancie.id,
+                jobRequirementsID: requirementCreated.id,
+              });
+            }))
+          }
+
+          if(benefits) {
+            const benefitsArray = await this.benefitsByJobVacanciesEntity.findAll({ where: {
+              jobVacanciesID: jobVacancie.id
+            }})
+
+            await Promise.all(
+              benefitsArray.map(async (benefit) => await this.benefitsByJobVacanciesEntity.destroy({ where: { jobBenefitsID: benefit.id}}))
+            )
+
+            await Promise.all(
+              benefits.map(async (benefit) => {
+                const benefitConverted = benefit.toUpperCase();
+                const benefitAlreadyExists = await this.jobBenefitsEntity.findOne({
+                  where: { name: benefitConverted },
+                });
+      
+                if (
+                  benefitAlreadyExists &&
+                  benefitAlreadyExists.name === benefitConverted
+                ) {
+                  await this.benefitsByJobVacanciesEntity.create({
+                    jobVacanciesID: jobVacancie.id,
+                    jobBenefitsID: benefitAlreadyExists.id,
+                  });
+                }
+      
+                const benefitsCreated = await this.jobBenefitsEntity.create({
+                  name: benefitConverted,
+                });
+                await this.benefitsByJobVacanciesEntity.create({
+                  jobVacanciesID: jobVacancie.id,
+                  jobBenefitsID: benefitsCreated.id,
+                });
+              }),
+            );
+          }
+          
+          if (softSkills) {
+            const softSkillsArray = await this. softSkillsByJobVacancies.findAll({ where: {
+              jobVacanciesID: jobVacancie.id
+            }})
+
+            await Promise.all(
+              softSkillsArray.map(async (skill) => await this.hardSkillsByJobVacancies.destroy({ where: { hardSkillsID: skill.id }}))
+            )
+
+
+            await Promise.all(
+              softSkills.map(async (softSkill) => {
+                const convertedSoftSkill = softSkill.toUpperCase();
+                const softSkillExists = await this.softSkillsEntity.findOne({
+                  where: { name: convertedSoftSkill },
+                });
+    
+                if (
+                  softSkillExists &&
+                  softSkillExists.name === convertedSoftSkill
+                ) {
+                  await this.softSkillsByJobVacancies.create({
+                    jobVacanciesID: jobVacancie.id,
+                    softSkillsID: softSkillExists.id,
+                  });
+                } else {
+                  const softSkillCreated = await this.softSkillsEntity.create({
+                    name: convertedSoftSkill,
+                  });
+    
+                  await this.softSkillsByJobVacancies.create({
+                    jobVacanciesID: jobVacancie.id,
+                    softSkillsID: softSkillCreated.id,
+                  });
+                }
+              }),
+            );
+          }
+    
+          if (hardSkills) {
+            
+            const hardSkillsArray = await this. hardSkillsByJobVacancies.findAll({ where: {
+              jobVacanciesID: jobVacancie.id
+            }})
+
+            await Promise.all(
+              hardSkillsArray.map(async (skill) => await this.hardSkillsByJobVacancies.destroy({ where: { hardSkillsID: skill.id }}))
+            )
+
+            await Promise.all(
+              hardSkills.map(async (hardSkill) => {
+                const convertedHardSkill = hardSkill.toUpperCase();
+                const hardSkillExists = await this.hardSkillsEntity.findOne({
+                  where: { name: convertedHardSkill },
+                });
+    
+                if (
+                  hardSkillExists &&
+                  hardSkillExists.name === convertedHardSkill
+                ) {
+                  await this.hardSkillsByJobVacancies.create({
+                    jobVacanciesID: jobVacancie.id,
+                    hardSkillsID: hardSkillExists.id,
+                  });
+                } else {
+                  const hardSkillCreated = await this.hardSkillsEntity.create({
+                    name: convertedHardSkill,
+                  });
+    
+                  await this.hardSkillsByJobVacancies.create({
+                    jobVacanciesID: jobVacancie.id,
+                    hardSkillsID: hardSkillCreated.id,
+                  });
+                }
+              }),
+            );
+          }
+          transaction.commit();
+          return jobVacancie;
+        }
+      }
+    }catch(err){
+      await transaction.rollback();
+      console.log(err.message)
+    }
   }
 }
