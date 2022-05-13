@@ -175,4 +175,21 @@ export class JobVacanciesService {
 
     return skillsByJobVacancie;
   }
+
+  async updateJobVacancie(
+    jobVacancieID: number,
+    data: CreateJobVacanciesDTO
+  ): Promise<JobVacanciesModel>{
+    const jobVacancie = await this.jobVacanciesRepository.getJobVacancie(jobVacancieID)
+
+    if (!jobVacancie) throw new NotFoundException('Job Vacancie Not Found')
+
+    if (!data) throw new BadRequestException('Invalid Params');
+
+    const company = await this.companyRepository.getCompanyByID(data.companyID)
+
+    if(!company) throw new NotFoundException('Company Not Found')
+
+    return await this.jobVacanciesRepository.updateJobVacancie({...data})
+  }
 }
