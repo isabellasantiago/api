@@ -3,7 +3,7 @@ import { bcryptInterface } from './interface/bcrypt.interface';
 
 export class Bcrypt implements bcryptInterface {
   crypt(value: string): string {
-    const salt = genSaltSync(11);
+    const salt = genSaltSync(12);
     return hashSync(value, salt);
   }
 
