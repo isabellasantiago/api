@@ -9,6 +9,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/common/decorators/roles/roles.decorator';
+import { UserType } from 'src/common/enums/user-type.enum';
 import { BenefitsByJobVacanciesModel } from 'src/common/models/benefitsByobVacancies.model';
 import { HardSkillsByJobVacanciesModel } from 'src/common/models/hardSkillsByJobVacancies.model';
 import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
@@ -26,6 +28,7 @@ export class JobVacancieController {
   ) {}
 
   @Post('/')
+  @Roles(UserType.COMPANY)
   async create(
     @Body(new ValidationPipe({ transform: true })) data: CreateJobVacanciesDTO,
   ): Promise<JobVacanciesModel> {
@@ -95,7 +98,6 @@ export class JobVacancieController {
   async updateJobVacancie(
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
     @Body(new ValidationPipe({transform: true})) data: CreateJobVacanciesDTO) {
-    console.log(param.id)
     return await this.jobVacanciesService.updateJobVacancie(param.id, data)
   }
 }

@@ -67,10 +67,7 @@ export class CompanyService {
   }
 
   async getCompanyByCNPJ(cnpj: string): Promise<CompanyModel> {
-    console.log(cnpj);
     const company = await this.companyRepository.getCompanyByCNPJ(cnpj);
-
-    console.log(cnpj);
 
     if (!company) throw new NotFoundException('Company not found');
 

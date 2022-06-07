@@ -10,6 +10,7 @@ type Envs = {
   nodeEnv: string;
   port: string;
   mysql: Mysql;
+  jwtSecret: string;
 };
 
 const envs: Envs = {
@@ -22,6 +23,7 @@ const envs: Envs = {
     user: process.env.MYSQL_USER || 'aa',
     password: process.env.MYSQL_PASSWORD || 'aa',
   },
+  jwtSecret: process.env.SECRET || 'aa',
 };
 
 export default envs;

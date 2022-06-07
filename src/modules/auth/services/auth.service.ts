@@ -1,10 +1,15 @@
 import { Inject, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { UserModel } from "src/common/models/user.model";
 import { BcryptRepositoryService } from "src/repository/bcrypt/bcrypt.repository.service";
 import { UserRepositoryService } from "src/repository/services/user/user.repository.service";
 
 export class AuthService {
-    constructor(@Inject(UserRepositoryService) private readonly userRepositoryService: UserRepositoryService, @Inject(BcryptRepositoryService) private readonly bcryptRepository: BcryptRepositoryService){}
+    constructor(
+        @Inject(UserRepositoryService) private readonly userRepositoryService: UserRepositoryService,
+        @Inject(BcryptRepositoryService) private readonly bcryptRepository: BcryptRepositoryService,
+        @Inject(JwtService) private readonly jwtService: JwtService
+    ){}
 
 
     async validateUser(email: string, passwordReq: string): Promise<Omit<UserModel, 'password'> | null> {
@@ -18,6 +23,14 @@ export class AuthService {
 
         return user;
     }
+
+    async login(user: any) {
+        const payload = { email: user.email, sub: user.id}
+
+        return {
+            access_token: this.jwtService.sign(payload),
+        }
+    };
 
 
 }

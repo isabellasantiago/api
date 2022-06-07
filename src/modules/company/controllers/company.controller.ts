@@ -44,7 +44,6 @@ export class CompanyController {
   async getCompanyByCNPJ(
     @Body(new ValidationPipe({ transform: true })) cnpj: string,
   ): Promise<CompanyModel> {
-    console.log(cnpj);
     return await this.companyService.getCompanyByCNPJ(cnpj);
   }
 
