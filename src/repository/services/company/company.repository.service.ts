@@ -1,4 +1,5 @@
 import { InjectModel } from '@nestjs/sequelize';
+import { UserType } from 'src/common/enums/user-type.enum';
 import { CompanyModel } from 'src/common/models/company.model';
 import { UserEntity } from 'src/entities';
 import { CompanyEntity } from 'src/entities/company.entity';
@@ -18,7 +19,7 @@ export class CompanyRepositoryService {
       const user = await this.userEntity.create({
         email: data.email,
         password: data.password,
-        type: 2,
+        type: UserType.COMPANY,
       });
 
       const companyData = {

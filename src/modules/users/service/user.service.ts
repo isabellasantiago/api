@@ -28,8 +28,7 @@ export class UserService {
     const isEmailValid = this.validatorRepositoryService.isEmail(user.email);
     if (!isEmailValid) throw new BadRequestException('Email invalid');
 
-    const isTypeNumber = this.validatorRepositoryService.isNumber(user.type);
-    if (!isTypeNumber) throw new BadRequestException('Type is invalid');
+    if (!user.type) throw new BadRequestException('Type is invalid');
 
     const cryptedPassword = this.bcryptRepository.crypt(user.password);
 

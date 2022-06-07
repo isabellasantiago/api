@@ -6,16 +6,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { RolesGuards } from 'src/common/decorators/roles/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles/roles.decorator';
+import { Role } from 'src/common/enums/roles.enum';
 import { UserType } from 'src/common/enums/user-type.enum';
 import { BenefitsByJobVacanciesModel } from 'src/common/models/benefitsByobVacancies.model';
 import { HardSkillsByJobVacanciesModel } from 'src/common/models/hardSkillsByJobVacancies.model';
 import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
 import { RequirementsByJobVacanciesModel } from 'src/common/models/requirementsByJobVacancies.model';
 import { SoftSkillsByJobVacanciesModel } from 'src/common/models/softSkillsByJobVacancies.model';
+import { JwtAuthGuard } from 'src/modules/auth/services/jwt-auth.guard';
 import { CreateJobVacanciesDTO } from '../dtos/create-jobVacancies.dto';
 import { JobVacanciesService } from '../services/jobVacancies.service';
 
@@ -27,8 +31,9 @@ export class JobVacancieController {
     private readonly jobVacanciesService: JobVacanciesService,
   ) {}
 
-  @Post('/')
   @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
+  @Post('/')
   async create(
     @Body(new ValidationPipe({ transform: true })) data: CreateJobVacanciesDTO,
   ): Promise<JobVacanciesModel> {
