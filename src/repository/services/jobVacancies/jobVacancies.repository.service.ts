@@ -219,6 +219,20 @@ export class JobVacanciesRepositoryService {
     return jobVacancie;
   }
 
+  async getJobVacancieByCompanyID(companyID: number, id: number): Promise<JobVacanciesModel> {
+    const jobVacancie = await this.jobVacanciesEntity.findOne({
+      where: { companyID, id },
+      include: [
+        {
+          model: CompanyEntity,
+          required: true,
+        },
+      ],
+    });
+
+    return jobVacancie;
+  }
+
   async getAllCompanyJobVacancies(
     companyID: number,
   ): Promise<JobVacanciesModel[]> {

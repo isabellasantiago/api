@@ -92,6 +92,8 @@ export class JobVacancieController {
     return await this.jobVacanciesService.getJobVacanciesHardSkills(param.id);
   }
 
+  @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
   @Put('/pause/:id')
   async pauseJobVacancie(
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
@@ -99,6 +101,8 @@ export class JobVacancieController {
     return await this.jobVacanciesService.pauseJobVacancie(param.id);
   }
 
+  @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
   @Put('/:id')
   async updateJobVacancie(
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
