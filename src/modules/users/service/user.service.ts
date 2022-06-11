@@ -51,6 +51,16 @@ export class UserService {
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<UserModel> {
+    const isEmailValid = this.validatorRepositoryService.isEmail(email)
+    if (!isEmailValid) throw new BadRequestException('Invalid params');
+
+    const user = await this.userRepository.getUserByEmail(email);
+    if(!user) throw new NotFoundException('User not Found');
+
+    return user;
+  }
+
   async inactiveOrActiveUser(id: number): Promise<boolean> {
     const user = await this.userRepository.getUserByID(id);
     if (!user) throw new NotFoundException('User not found');
