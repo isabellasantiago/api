@@ -37,6 +37,11 @@ export class UserController {
     return this.userService.getUserByID(param.id);
   }
 
+  @Get('/')
+  async getUserByEmail(@Body(new ValidationPipe({transform: true})) email: string): Promise<UserModel>{
+    return this.userService.getUserByEmail(email);
+  }
+
   @Put('/inactive-active/:id')
   async inactiveOrActive(
     @Param(new ValidationPipe({ transform: true })) param: { id: number },

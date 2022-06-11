@@ -105,7 +105,7 @@ export class JobVacanciesService {
     return jobVacancieUpdated;
   }
 
-  async deleteJobVacancie(id): Promise<boolean> {
+  async deleteJobVacancie(id:number): Promise<boolean> {
     const jobVacancieExists = await this.jobVacanciesRepository.getJobVacancie(
       id,
     );
@@ -180,7 +180,7 @@ export class JobVacanciesService {
     jobVacancieID: number,
     data: CreateJobVacanciesDTO
   ): Promise<JobVacanciesModel>{
-    const jobVacancie = await this.jobVacanciesRepository.getJobVacancie(jobVacancieID)
+    const jobVacancie = await this.jobVacanciesRepository.getJobVacancieByCompanyID(data.companyID, jobVacancieID)
 
     if (!jobVacancie) throw new NotFoundException('Job Vacancie Not Found')
 
@@ -188,7 +188,7 @@ export class JobVacanciesService {
 
     const company = await this.companyRepository.getCompanyByID(data.companyID)
 
-    if(!company) throw new NotFoundException('Company Not Found')
+    if(!company) throw new NotFoundException('Company Not Found'); 
 
     return await this.jobVacanciesRepository.updateJobVacancie({...data})
   }

@@ -28,8 +28,7 @@ export class UserService {
     const isEmailValid = this.validatorRepositoryService.isEmail(user.email);
     if (!isEmailValid) throw new BadRequestException('Email invalid');
 
-    const isTypeNumber = this.validatorRepositoryService.isNumber(user.type);
-    if (!isTypeNumber) throw new BadRequestException('Type is invalid');
+    if (!user.type) throw new BadRequestException('Type is invalid');
 
     const cryptedPassword = this.bcryptRepository.crypt(user.password);
 
@@ -48,6 +47,16 @@ export class UserService {
   async getUserByID(id: number): Promise<UserModel> {
     const user = await this.userRepository.getUserByID(id);
     if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<UserModel> {
+    const isEmailValid = this.validatorRepositoryService.isEmail(email)
+    if (!isEmailValid) throw new BadRequestException('Invalid params');
+
+    const user = await this.userRepository.getUserByEmail(email);
+    if(!user) throw new NotFoundException('User not Found');
 
     return user;
   }

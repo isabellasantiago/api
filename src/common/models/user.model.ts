@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserType } from '../enums/user-type.enum';
 
 export class UserModel {
   @ApiProperty()
@@ -11,7 +12,7 @@ export class UserModel {
   password: string;
 
   @ApiProperty()
-  type: number;
+  type: UserType;
 
   @ApiProperty()
   active: boolean;
