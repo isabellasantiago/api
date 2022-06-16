@@ -33,6 +33,9 @@ export class CandidateService {
     if (candidateAlreadyExists)
       throw new ConflictException('Candidate already registered');
 
+    const isEmailRegistered = this.userRepository.getUserByEmail(data.email);
+    if (!isEmailRegistered) throw new ConflictException('Email is invalid');
+
     const isEmailValid = this.validatorRepository.isEmail(data.email);
     if (!isEmailValid) throw new BadRequestException('Email is invalid');
 
