@@ -9,8 +9,6 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { ContractTypes } from 'src/common/enums/contractType.enum';
-import { EthnicityTypes } from 'src/common/enums/ethnicityTypes.enum';
-import { GenderTypesCv } from 'src/common/enums/genderTypesCv.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
 import { CandidateEntity } from './candidate.entity';
 
@@ -42,19 +40,6 @@ export class PersonalDataEntity extends Model<PersonalDataEntity> {
   naturalness: string;
 
   @Column({
-    type: DataType.ENUM({
-      values: [
-        '1 - Mulher',
-        '2- Mulher Trans',
-        '3 - Homem (cis)',
-        '4 - Homem Trans',
-        '5 - OUTROS',
-      ],
-    }),
-  })
-  gender: GenderTypesCv;
-
-  @Column({
     type: DataType.DATE,
   })
   birthDate: Date;
@@ -67,11 +52,6 @@ export class PersonalDataEntity extends Model<PersonalDataEntity> {
 
   @Column
   phone: string;
-
-  @Column({
-    type: DataType.ENUM('1- Negra', '2- Indígena', '3-Amarela', '4-Branca'),
-  })
-  ethnicity: EthnicityTypes;
 
   @Column
   isPcd: boolean;

@@ -8,26 +8,14 @@ import { BcryptRepositoryService } from './bcrypt/bcrypt.repository.service';
 import {
   AcademicsInformationsEntity,
   CandidateEntity,
-  HardSkillsByCandidateEntity,
-  JobRequirementsEntity,
   JobVacanciesEntity,
   PersonalDataEntity,
   PreviousJobsEntity,
-  RequirementsByJobVacanciesEntity,
-  SoftSkillsByCandidateEntity,
 } from 'src/entities';
 import { CandidateRepositoryService } from './services/candidate/candidate.repository.service';
 import { CompanyRepositoryService } from './services/company/company.repository.service';
 import { CompanyEntity } from 'src/entities/company.entity';
-import { JobBenefitsEntity } from 'src/entities/jobBenefits.entity';
-import { BenefitsByJobVacanciesEntity } from 'src/entities/benefitsByJobVacancies.entity';
-import { SoftSkillsEntity } from 'src/entities/softSkills.entity';
-import { HardSkillsEntity } from 'src/entities/hardSkills.entity';
-import { SoftSkillsByJobVacanciesEntity } from 'src/entities/softSkillsByJobVacancies.entity';
-import { HardSkillsByJobVacanciesEntity } from 'src/entities/hardSkillsByJobVacancies.entity';
 import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacancies.repository.service';
-import { HardSkillsRepositoryService } from './services/hardSkills/hardSkills.repository.service';
-import { SoftSkillsRepositoryService } from './services/softSkills/softSkills.repository.service';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
 import { CvRepositoryService } from './services/cv/cv.repository.service';
 
@@ -38,16 +26,6 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
       CandidateEntity,
       CompanyEntity,
       JobVacanciesEntity,
-      JobRequirementsEntity,
-      JobBenefitsEntity,
-      RequirementsByJobVacanciesEntity,
-      BenefitsByJobVacanciesEntity,
-      SoftSkillsEntity,
-      HardSkillsEntity,
-      SoftSkillsByJobVacanciesEntity,
-      HardSkillsByJobVacanciesEntity,
-      SoftSkillsByCandidateEntity,
-      HardSkillsByCandidateEntity,
       PersonalDataEntity,
       PreviousJobsEntity,
       LanguagesInformationEntity,
@@ -62,8 +40,6 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
     ValidatorRepositoryService,
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
-    HardSkillsRepositoryService,
-    SoftSkillsRepositoryService,
     CvRepositoryService,
   ],
   exports: [
@@ -73,8 +49,6 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
     ValidatorRepositoryService,
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
-    HardSkillsRepositoryService,
-    SoftSkillsRepositoryService,
     CvRepositoryService,
   ],
 })

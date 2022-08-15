@@ -1,19 +1,13 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { AcademicsInformationsModel } from 'src/common/models/academicsInformation.model';
-import { HardSkillsByCandidateModel } from 'src/common/models/hardSkillsByCandidate.model';
 import { LanguagesInformationModel } from 'src/common/models/languagesInformation.model';
 import { PersonalDataModel } from 'src/common/models/personalData.model';
 import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
-import { SoftSkillsByCandidateModel } from 'src/common/models/softSkillsByCandidate.model';
 import {
   AcademicsInformationsEntity,
   CandidateEntity,
-  HardSkillsByCandidateEntity,
-  HardSkillsEntity,
   PersonalDataEntity,
   PreviousJobsEntity,
-  SoftSkillsByCandidateEntity,
-  SoftSkillsEntity,
 } from 'src/entities';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
 import { CreateOrUpdateCvDTO } from 'src/modules/cv/dto/create-cv.dto';
@@ -31,14 +25,6 @@ export class CvRepositoryService {
     private readonly languagesEntity: typeof LanguagesInformationEntity,
     @InjectModel(PreviousJobsEntity)
     private readonly previousJobsEntity: typeof PreviousJobsEntity,
-    @InjectModel(SoftSkillsEntity)
-    private readonly softSkillsEntity: typeof SoftSkillsEntity,
-    @InjectModel(HardSkillsEntity)
-    private readonly hardSkillsEntity: typeof HardSkillsEntity,
-    @InjectModel(SoftSkillsByCandidateEntity)
-    private readonly softSkillsByCandidateEntity: typeof SoftSkillsByCandidateEntity,
-    @InjectModel(HardSkillsByCandidateEntity)
-    private readonly hardSkillsByCandidateEntity: typeof HardSkillsByCandidateEntity,
   ) {}
 
   async createCv({
@@ -46,14 +32,10 @@ export class CvRepositoryService {
     imageURL,
     linkedinURL,
     naturalness,
-    gender,
     birthDate,
     state,
     city,
     phone,
-    ethnicity,
-    isPcd,
-    allowsWhatsapp,
     field,
     contractType,
     level,
@@ -61,8 +43,6 @@ export class CvRepositoryService {
     academics,
     languages,
     previousJobs,
-    softSkills,
-    hardSkills,
   }: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
 
@@ -72,14 +52,10 @@ export class CvRepositoryService {
         imageURL,
         linkedinURL,
         naturalness,
-        gender,
         birthDate,
         state,
         city,
         phone,
-        ethnicity,
-        isPcd,
-        allowsWhatsapp,
         field,
         level,
         role,
@@ -141,66 +117,6 @@ export class CvRepositoryService {
                 jobDescription,
               }),
           ),
-        );
-      }
-
-      if (softSkills) {
-        await Promise.all(
-          softSkills.map(async (softSkill) => {
-            const convertedSoftSkill = softSkill.toUpperCase();
-            const softSkillExists = await this.softSkillsEntity.findOne({
-              where: { name: convertedSoftSkill },
-            });
-
-            if (
-              softSkillExists &&
-              softSkillExists.name === convertedSoftSkill
-            ) {
-              await this.softSkillsByCandidateEntity.create({
-                candidateID,
-                softSkillsID: softSkillExists.id,
-              });
-            } else {
-              const softSkillCreated = await this.softSkillsEntity.create({
-                name: convertedSoftSkill,
-              });
-
-              await this.softSkillsByCandidateEntity.create({
-                candidateID,
-                softSkillsID: softSkillCreated.id,
-              });
-            }
-          }),
-        );
-      }
-
-      if (hardSkills) {
-        await Promise.all(
-          hardSkills.map(async (hardSkill) => {
-            const convertedHardSkill = hardSkill.toUpperCase();
-            const hardSkillExists = await this.hardSkillsEntity.findOne({
-              where: { name: convertedHardSkill },
-            });
-
-            if (
-              hardSkillExists &&
-              hardSkillExists.name === convertedHardSkill
-            ) {
-              await this.hardSkillsByCandidateEntity.create({
-                candidateID,
-                hardSkillsID: hardSkillExists.id,
-              });
-            } else {
-              const hardSkillCreated = await this.hardSkillsEntity.create({
-                name: convertedHardSkill,
-              });
-
-              await this.hardSkillsByCandidateEntity.create({
-                candidateID,
-                hardSkillsID: hardSkillCreated.id,
-              });
-            }
-          }),
         );
       }
 
@@ -271,51 +187,15 @@ export class CvRepositoryService {
     return [];
   }
 
-  async getAllSoftSkills(
-    candidateID: number,
-  ): Promise<SoftSkillsByCandidateModel[]> {
-    const candidate = await this.candidateEntity.findByPk(candidateID);
-
-    if (candidate) {
-      const skillsByCandidate = await this.softSkillsByCandidateEntity.findAll({
-        where: { candidateID },
-        include: { model: SoftSkillsEntity, required: true },
-      });
-
-      return skillsByCandidate;
-    }
-    return [];
-  }
-
-  async getAllHardSkills(
-    candidateID: number,
-  ): Promise<HardSkillsByCandidateModel[]> {
-    const candidate = await this.candidateEntity.findByPk(candidateID);
-
-    if (candidate) {
-      const skillsByCandidate = await this.hardSkillsByCandidateEntity.findAll({
-        where: { candidateID },
-        include: { model: HardSkillsEntity, required: true },
-      });
-
-      return skillsByCandidate;
-    }
-    return [];
-  }
-
   async updateCv({
     candidateID,
     imageURL,
     linkedinURL,
     naturalness,
-    gender,
     birthDate,
     state,
     city,
     phone,
-    ethnicity,
-    isPcd,
-    allowsWhatsapp,
     field,
     contractType,
     level,
@@ -323,9 +203,7 @@ export class CvRepositoryService {
     academics,
     languages,
     previousJobs,
-    softSkills,
-    hardSkills,
-  }): Promise<ICv> {
+  }: CreateOrUpdateCvDTO): Promise<ICv> {
     const personalData = await this.personalDataEntity.findOne({
       where: { candidateID },
     });
@@ -334,14 +212,10 @@ export class CvRepositoryService {
       imageURL,
       linkedinURL,
       naturalness,
-      gender,
       birthDate,
       state,
       city,
       phone,
-      ethnicity,
-      isPcd,
-      allowsWhatsapp,
       field,
       contractType,
       level,
@@ -378,100 +252,34 @@ export class CvRepositoryService {
       ),
     );
 
-    const previousJobsArray = await this.getAllPreviousJobs(candidateID)
+    const previousJobsArray = await this.getAllPreviousJobs(candidateID);
     await Promise.all(
-      previousJobsArray.map(async (previousJob) => await this.previousJobsEntity.destroy({ where: {id: previousJob.id}}))
-    )
+      previousJobsArray.map(
+        async (previousJob) =>
+          await this.previousJobsEntity.destroy({
+            where: { id: previousJob.id },
+          }),
+      ),
+    );
 
     await Promise.all(
-      previousJobs.map(async (previousJob) => await this.previousJobsEntity.create(previousJob))
-    )    
+      previousJobs.map(
+        async (previousJob) =>
+          await this.previousJobsEntity.create(previousJob),
+      ),
+    );
 
-    if (softSkills) {
-      const softSkillsByCandidate = await this.softSkillsByCandidateEntity.findAll({where: {candidateID}})
-      await Promise.all(
-        softSkillsByCandidate.map(async (skill) => await this.softSkillsByCandidateEntity.destroy({ where: { id: skill.id }}))
-      )
-
-      await Promise.all(
-        softSkills.map(async (softSkill) => {
-          const convertedSoftSkill = softSkill.toUpperCase();
-          const softSkillExists = await this.softSkillsEntity.findOne({
-            where: { name: convertedSoftSkill },
-          });
-
-          if (
-            softSkillExists &&
-            softSkillExists.name === convertedSoftSkill
-          ) {
-            await this.softSkillsByCandidateEntity.create({
-              candidateID,
-              softSkillsID: softSkillExists.id,
-            });
-          } else {
-            const softSkillCreated = await this.softSkillsEntity.create({
-              name: convertedSoftSkill,
-            });
-
-            await this.softSkillsByCandidateEntity.create({
-              candidateID,
-              softSkillsID: softSkillCreated.id,
-            });
-          }
-        }),
-      );
-    }
-
-    if (hardSkills) {
-      const hardSkillsByCandidate = await this.hardSkillsByCandidateEntity.findAll({where: {candidateID}})
-      await Promise.all(
-        hardSkillsByCandidate.map(async (skill) => await this.hardSkillsByCandidateEntity.destroy({ where: { id: skill.id }}))
-      )
-      await Promise.all(
-        hardSkills.map(async (hardSkill) => {
-          const convertedHardSkill = hardSkill.toUpperCase();
-          const hardSkillExists = await this.hardSkillsEntity.findOne({
-            where: { name: convertedHardSkill },
-          });
-
-          if (
-            hardSkillExists &&
-            hardSkillExists.name === convertedHardSkill
-          ) {
-            await this.hardSkillsByCandidateEntity.create({
-              candidateID,
-              hardSkillsID: hardSkillExists.id,
-            });
-          } else {
-            const hardSkillCreated = await this.hardSkillsEntity.create({
-              name: convertedHardSkill,
-            });
-
-            await this.hardSkillsByCandidateEntity.create({
-              candidateID,
-              hardSkillsID: hardSkillCreated.id,
-            });
-          }
-        }),
-      );
-    }
-
-    const personalDataUpdated = await this.getPersonalData(candidateID)
-    const academicUpdated = await this.getAllAcademics(candidateID)
-    const languageUpdated = await this.getAllLanguages(candidateID)
-    const previousJobsUpdated = await this.getAllPreviousJobs(candidateID)
-    const softSkillsUpdated = await this.getAllSoftSkills(candidateID)
-    const hardSkillsUpdated = await this.getAllHardSkills(candidateID)
-
+    const personalDataUpdated = await this.getPersonalData(candidateID);
+    const academicUpdated = await this.getAllAcademics(candidateID);
+    const languageUpdated = await this.getAllLanguages(candidateID);
+    const previousJobsUpdated = await this.getAllPreviousJobs(candidateID);
 
     const resume = {
       personalData: personalDataUpdated,
       academics: academicUpdated,
       languages: languageUpdated,
       previousJobs: previousJobsUpdated,
-      softSkills: softSkillsUpdated,
-      hardSkills: hardSkillsUpdated,
-    }
+    };
 
     return resume;
   }

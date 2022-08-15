@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ContractTypes } from '../enums/contractType.enum';
-import { EthnicityTypes } from '../enums/ethnicityTypes.enum';
-import { GenderTypesCv } from '../enums/genderTypesCv.enum';
 import { LevelType } from '../enums/levelType.enum';
 
 export class PersonalDataModel {
@@ -20,11 +18,6 @@ export class PersonalDataModel {
   @ApiProperty()
   naturalness: string;
 
-  @ApiProperty({
-    description: `'1 - Mulher', '2- Mulher Trans', '3 - Homem (cis)','4 - Homem Trans', '5 - OUTROS'`,
-  })
-  gender: GenderTypesCv;
-
   @ApiProperty()
   birthDate: Date;
 
@@ -36,17 +29,6 @@ export class PersonalDataModel {
 
   @ApiProperty()
   phone: string;
-
-  @ApiProperty({
-    description: '1- Negra, 2- Indígena, 3- Amarela, 4- Branca',
-  })
-  ethnicity: EthnicityTypes;
-
-  @ApiProperty()
-  isPcd: boolean;
-
-  @ApiProperty()
-  allowsWhatsapp: boolean;
 
   @ApiProperty()
   field: string;
