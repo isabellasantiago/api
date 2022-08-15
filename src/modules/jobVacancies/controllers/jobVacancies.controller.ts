@@ -12,13 +12,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { RolesGuards } from 'src/common/decorators/roles/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles/roles.decorator';
-import { Role } from 'src/common/enums/roles.enum';
 import { UserType } from 'src/common/enums/user-type.enum';
-import { BenefitsByJobVacanciesModel } from 'src/common/models/benefitsByobVacancies.model';
-import { HardSkillsByJobVacanciesModel } from 'src/common/models/hardSkillsByJobVacancies.model';
 import { JobVacanciesModel } from 'src/common/models/jobVacancies.model';
-import { RequirementsByJobVacanciesModel } from 'src/common/models/requirementsByJobVacancies.model';
-import { SoftSkillsByJobVacanciesModel } from 'src/common/models/softSkillsByJobVacancies.model';
 import { JwtAuthGuard } from 'src/modules/auth/services/jwt-auth.guard';
 import { CreateJobVacanciesDTO } from '../dtos/create-jobVacancies.dto';
 import { JobVacanciesService } from '../services/jobVacancies.service';
@@ -64,34 +59,6 @@ export class JobVacancieController {
     );
   }
 
-  @Get('/requirements/:id')
-  async getRequirements(
-    @Param(new ValidationPipe({ transform: true })) param: { id: number },
-  ): Promise<RequirementsByJobVacanciesModel[]> {
-    return await this.jobVacanciesService.getJobVacanciesRequirements(param.id);
-  }
-
-  @Get('/benefits/:id')
-  async getBenefits(
-    @Param(new ValidationPipe({ transform: true })) param: { id: number },
-  ): Promise<BenefitsByJobVacanciesModel[]> {
-    return await this.jobVacanciesService.getJobVacanciesBenefits(param.id);
-  }
-
-  @Get('/softskills/:id')
-  async getSoftSkills(
-    @Param(new ValidationPipe({ transform: true })) param: { id: number },
-  ): Promise<SoftSkillsByJobVacanciesModel[]> {
-    return await this.jobVacanciesService.getJobVacanciesSoftSkills(param.id);
-  }
-
-  @Get('/hardskills/:id')
-  async getHardSkills(
-    @Param(new ValidationPipe({ transform: true })) param: { id: number },
-  ): Promise<HardSkillsByJobVacanciesModel[]> {
-    return await this.jobVacanciesService.getJobVacanciesHardSkills(param.id);
-  }
-
   @Roles(UserType.COMPANY)
   @UseGuards(JwtAuthGuard, RolesGuards)
   @Put('/pause/:id')
@@ -106,7 +73,8 @@ export class JobVacancieController {
   @Put('/:id')
   async updateJobVacancie(
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
-    @Body(new ValidationPipe({transform: true})) data: CreateJobVacanciesDTO) {
-    return await this.jobVacanciesService.updateJobVacancie(param.id, data)
+    @Body(new ValidationPipe({ transform: true })) data: CreateJobVacanciesDTO,
+  ) {
+    return await this.jobVacanciesService.updateJobVacancie(param.id, data);
   }
 }

@@ -8,15 +8,10 @@ import {
   Model,
   Table,
   HasMany,
-  BelongsToMany,
 } from 'sequelize-typescript';
 import { AcademicsInformationsEntity } from './academicsInformations.entity';
-import { HardSkillsEntity } from './hardSkills.entity';
-import { HardSkillsByCandidateEntity } from './hardSkillsByCandidate.entity';
 import { LanguagesInformationEntity } from './languagesInformation.entity';
 import { PreviousJobsEntity } from './previousJobs.entity';
-import { SoftSkillsEntity } from './softSkills.entity';
-import { SoftSkillsByCandidateEntity } from './softSkillsByCandidate.entity';
 import { UserEntity } from './user.entity';
 
 @Table({ tableName: 'Candidate', paranoid: true })
@@ -73,12 +68,6 @@ export class CandidateEntity extends Model<CandidateEntity> {
     type: DataType.DATE,
   })
   deletedAt: Date;
-
-  @BelongsToMany(() => SoftSkillsEntity, () => SoftSkillsByCandidateEntity)
-  softSkills: SoftSkillsEntity[];
-
-  @BelongsToMany(() => HardSkillsEntity, () => HardSkillsByCandidateEntity)
-  hardSkills: HardSkillsEntity[];
 
   @HasMany(() => PreviousJobsEntity)
   previousJobs: PreviousJobsEntity[];

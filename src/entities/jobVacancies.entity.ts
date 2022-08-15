@@ -10,15 +10,8 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { ContractTypes } from 'src/common/enums/contractType.enum';
-import { EthnicityTypes } from 'src/common/enums/ethnicityTypes.enum';
-import { GenderTypes } from 'src/common/enums/genderTypes.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
-import { BenefitsByJobVacanciesEntity } from './benefitsByJobVacancies.entity';
 import { CompanyEntity } from './company.entity';
-import { HardSkillsByJobVacanciesEntity } from './hardSkillsByJobVacancies.entity';
-import { RequirementsByJobVacanciesEntity } from './requirementsByJobVacancies.entity';
-import { SoftSkillsByJobVacanciesEntity } from './softSkillsByJobVacancies.entity';
-
 @Table({ tableName: 'JobVacancies' })
 export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   @PrimaryKey
@@ -70,25 +63,6 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
   level: LevelType;
 
   @Column({
-    type: DataType.ENUM({
-      values: [
-        '1 - MULHER',
-        '2 - MULHER TRANS',
-        '3 - PESSOAS TRANS',
-        '4 - MULHER (CIS) E PESSOAS TRANS',
-      ],
-    }),
-  })
-  gender: GenderTypes;
-
-  @Column({
-    type: DataType.ENUM({
-      values: ['1 - NEGRA', '2 - INDÍGENA', '3 - AMARELO'],
-    }),
-  })
-  ethnicity: EthnicityTypes;
-
-  @Column({
     type: DataType.BOOLEAN,
   })
   pcd: boolean;
@@ -112,16 +86,4 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
     defaultValue: DataType.NOW,
   })
   updatedAt: Date;
-
-  @HasMany(() => RequirementsByJobVacanciesEntity)
-  requirements: RequirementsByJobVacanciesEntity[];
-
-  @HasMany(() => BenefitsByJobVacanciesEntity)
-  benefits: BenefitsByJobVacanciesEntity[];
-
-  @HasMany(() => SoftSkillsByJobVacanciesEntity)
-  softSkills: SoftSkillsByJobVacanciesEntity[];
-
-  @HasMany(() => HardSkillsByJobVacanciesEntity)
-  hardSkills: HardSkillsByJobVacanciesEntity[];
 }

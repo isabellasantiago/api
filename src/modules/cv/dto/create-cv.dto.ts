@@ -1,13 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ContractTypes } from 'src/common/enums/contractType.enum';
-import { EthnicityTypes } from 'src/common/enums/ethnicityTypes.enum';
-import { GenderTypesCv } from 'src/common/enums/genderTypesCv.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
 import { AcademicsInformationsModel } from 'src/common/models/academicsInformation.model';
-import { HardSkillsModel } from 'src/common/models/hardSkills.model';
 import { LanguagesInformationModel } from 'src/common/models/languagesInformation.model';
 import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
-import { SoftSkillsModel } from 'src/common/models/softSkills.model';
 
 export class CreateOrUpdateCvDTO {
   @ApiProperty()
@@ -22,11 +18,6 @@ export class CreateOrUpdateCvDTO {
   @ApiProperty()
   naturalness: string;
 
-  @ApiProperty({
-    description: `'1 - Mulher', '2- Mulher Trans', '3 - Homem (cis)','4 - Homem Trans', '5 - OUTROS'`,
-  })
-  gender: GenderTypesCv;
-
   @ApiProperty()
   birthDate: Date;
 
@@ -38,17 +29,6 @@ export class CreateOrUpdateCvDTO {
 
   @ApiProperty()
   phone?: string;
-
-  @ApiProperty({
-    description: '1- Negra, 2- Indígena, 3- Amarela, 4- Branca',
-  })
-  ethnicity: EthnicityTypes;
-
-  @ApiProperty()
-  isPcd: boolean;
-
-  @ApiProperty()
-  allowsWhatsapp: boolean;
 
   @ApiProperty({
     description: 'Área desejada',
@@ -78,10 +58,4 @@ export class CreateOrUpdateCvDTO {
 
   @ApiProperty()
   previousJobs?: PreviousJobsModel[];
-
-  @ApiProperty()
-  hardSkills: Array<string>;
-
-  @ApiProperty()
-  softSkills: Array<string>;
 }

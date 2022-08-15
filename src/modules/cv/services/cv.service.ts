@@ -35,12 +35,6 @@ export class CvService {
 
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
-    if (!data.hardSkills)
-      throw new BadRequestException('Soft skills are required');
-
-    if (!data.hardSkills)
-      throw new BadRequestException('Hard skills are required');
-
     const personalData = await this.cvRepository.createCv(data);
 
     return personalData;
@@ -66,17 +60,11 @@ export class CvService {
       candidateID,
     );
 
-    const softSkills = await this.cvRepository.getAllSoftSkills(candidateID);
-
-    const hardSkills = await this.cvRepository.getAllHardSkills(candidateID);
-
     const cv = {
       personalData,
       academics,
       languages,
       previousJobs,
-      softSkills,
-      hardSkills,
     };
 
     return cv;
@@ -88,14 +76,10 @@ export class CvService {
       imageURL,
       linkedinURL,
       naturalness,
-      gender,
       birthDate,
       state,
       city,
       phone,
-      ethnicity,
-      isPcd,
-      allowsWhatsapp,
       field,
       contractType,
       level,
@@ -103,8 +87,6 @@ export class CvService {
       academics,
       languages,
       previousJobs,
-      softSkills,
-      hardSkills,
     } = data;
     const candidate = await this.candidateRepository.getCandidateByID(
       candidateID,
@@ -118,20 +100,15 @@ export class CvService {
 
     if (!cvAlreadyExists) throw new NotFoundException('Curriculum not found');
 
-
     return await this.cvRepository.updateCv({
       candidateID,
       imageURL,
       linkedinURL,
       naturalness,
-      gender,
       birthDate,
       state,
       city,
       phone,
-      ethnicity,
-      isPcd,
-      allowsWhatsapp,
       field,
       contractType,
       level,
@@ -139,8 +116,6 @@ export class CvService {
       academics,
       languages,
       previousJobs,
-      softSkills,
-      hardSkills,
-    })
+    });
   }
 }
