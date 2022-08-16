@@ -48,6 +48,15 @@ export class CandidateRepositoryService {
     return await this.candidateEntity.findByPk(id);
   }
 
+  async getCandidateByUserID(userID: number): Promise<CandidateModel> {
+    const company = await this.candidateEntity.findOne({
+      where: {
+        userID,
+      },
+    });
+    return company;
+  }
+
   async loadAllCandidates(): Promise<CandidateModel[]> {
     return await this.candidateEntity.findAll();
   }

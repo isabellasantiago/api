@@ -66,6 +66,15 @@ export class CompanyRepositoryService {
     return company;
   }
 
+  async getCompanyByUserID(userID: number): Promise<CompanyModel> {
+    const company = await this.companyEntity.findOne({
+      where: {
+        userID,
+      },
+    });
+    return company;
+  }
+
   async updateCompany(
     data: UpdateCompanyDTO,
     id: number,
