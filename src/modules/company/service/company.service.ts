@@ -74,6 +74,16 @@ export class CompanyService {
     return company;
   }
 
+  async getCompanyByUserID(userID: number): Promise<CompanyModel> {
+    const isNumber = this.validatorRepository.isNumber(userID);
+    if (!isNumber) throw new BadRequestException('Invalid userId');
+
+    const company = await this.companyRepository.getCompanyByUserID(userID);
+    if (!company) throw new NotFoundException('Company Not Found');
+
+    return company;
+  }
+
   async updateCompany(
     data: UpdateCompanyDTO,
     id: number,

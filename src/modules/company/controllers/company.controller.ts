@@ -47,6 +47,13 @@ export class CompanyController {
     return await this.companyService.getCompanyByCNPJ(cnpj);
   }
 
+  @Get('/userID/:userID')
+  async getCompanyByUserID(
+    @Param(new ValidationPipe({ transform: true })) param: { userID: number },
+  ): Promise<CompanyModel> {
+    return await this.companyService.getCompanyByUserID(Number(param.userID));
+  }
+
   @Put('/:id')
   async update(
     @Body(new ValidationPipe({ transform: true })) body: UpdateCompanyDTO,
