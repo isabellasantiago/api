@@ -33,6 +33,21 @@ export class CompanyModel {
   type: CompanyTypes;
 
   @ApiProperty()
+  mission: string;
+
+  @ApiProperty()
+  values: string;
+
+  @ApiProperty()
+  vision: string;
+
+  @ApiProperty()
+  cover: string;
+
+  @ApiProperty()
+  photo: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

@@ -38,7 +38,9 @@ export class UserController {
   }
 
   @Get('/')
-  async getUserByEmail(@Body(new ValidationPipe({transform: true})) email: string): Promise<UserModel>{
+  async getUserByEmail(
+    @Body(new ValidationPipe({ transform: true })) email: string,
+  ): Promise<UserModel> {
     return this.userService.getUserByEmail(email);
   }
 

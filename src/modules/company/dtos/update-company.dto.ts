@@ -37,4 +37,29 @@ export class UpdateCompanyDTO {
     default: '0 = STARTUP, 1 = TRADICIONAL, 2 = MULTINACIONAL',
   })
   type?: number;
+
+  @ApiProperty({
+    description: 'Missão da empresa',
+  })
+  mission?: string;
+
+  @ApiProperty({
+    description: 'Visão da empresa',
+  })
+  vision?: string;
+
+  @ApiProperty({
+    description: 'Valores da empresa',
+  })
+  values?: string;
+
+  @ApiProperty({
+    description: 'Capa do perfil da empresa',
+  })
+  cover?: string;
+
+  @ApiProperty({
+    description: 'Foto de apresentação da empresa',
+  })
+  photo?: string;
 }

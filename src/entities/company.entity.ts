@@ -69,16 +69,41 @@ export class CompanyEntity extends Model<CompanyEntity> {
     type: DataType.STRING,
   })
   type: CompanyTypes;
-  
+
   @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW
+    type: DataType.STRING,
   })
-    createdAt: Date;
+  mission: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  values: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  vision: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  cover: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  photo: string;
 
   @Column({
     type: DataType.DATE,
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
+  })
+  createdAt: Date;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
   })
   updatedAt: Date;
 
