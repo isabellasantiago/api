@@ -6,10 +6,15 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { RolesGuards } from 'src/common/decorators/roles/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles/roles.decorator';
+import { UserType } from 'src/common/enums/user-type.enum';
 import { CompanyModel } from 'src/common/models/company.model';
+import { JwtAuthGuard } from 'src/modules/auth/services/jwt-auth.guard';
 import { CreateCompanyDTO } from '../dtos/create-company.dto';
 import { UpdateCompanyDTO } from '../dtos/update-company.dto';
 import { CompanyService } from '../service/company.service';
@@ -54,6 +59,8 @@ export class CompanyController {
     return await this.companyService.getCompanyByUserID(Number(param.userID));
   }
 
+  @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
   @Put('/:id')
   async update(
     @Body(new ValidationPipe({ transform: true })) body: UpdateCompanyDTO,
