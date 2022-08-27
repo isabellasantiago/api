@@ -5,8 +5,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserType } from 'src/common/enums/user-type.enum';
-import { CandidateModel } from 'src/common/models/candidate.model';
-import { CompanyModel } from 'src/common/models/company.model';
 import { UserModel } from 'src/common/models/user.model';
 import { BcryptRepositoryService } from 'src/repository/bcrypt/bcrypt.repository.service';
 import { CandidateRepositoryService } from 'src/repository/services/candidate/candidate.repository.service';
