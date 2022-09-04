@@ -95,4 +95,11 @@ export class CompanyRepositoryService {
 
     return company;
   }
+
+  async deleteCompany(id: number): Promise<void> {
+    const company = await this.companyEntity.findByPk(id);
+    if (!company) return null;
+
+    company.destroy();
+  }
 }
