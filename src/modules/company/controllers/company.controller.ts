@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -67,5 +68,14 @@ export class CompanyController {
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
   ): Promise<CompanyModel> {
     return await this.companyService.updateCompany(body, param.id);
+  }
+
+  @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
+  @Delete('/:id')
+  async delete(
+    @Param(new ValidationPipe({ transform: true })) param: { id: number },
+  ): Promise<void> {
+    return await this.companyService.deleteCompany(param.id);
   }
 }

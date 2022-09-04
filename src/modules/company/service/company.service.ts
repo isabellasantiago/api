@@ -97,4 +97,11 @@ export class CompanyService {
 
     return companyUpdated;
   }
+
+  async deleteCompany(id: number): Promise<void> {
+    const company = await this.companyRepository.getCompanyByID(id);
+    if (!company) throw new NotFoundException('Company Not Found');
+
+    await this.companyRepository.deleteCompany(id);
+  }
 }
