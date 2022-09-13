@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -76,5 +77,14 @@ export class JobVacancieController {
     @Body(new ValidationPipe({ transform: true })) data: CreateJobVacanciesDTO,
   ) {
     return await this.jobVacanciesService.updateJobVacancie(param.id, data);
+  }
+
+  @Roles(UserType.COMPANY)
+  @UseGuards(JwtAuthGuard, RolesGuards)
+  @Delete('/:id')
+  async deleteJobVacancie(
+    @Param(new ValidationPipe({ transform: true })) param: { id: number },
+  ): Promise<boolean> {
+    return await this.jobVacanciesService.deleteJobVacancie(param.id);
   }
 }
