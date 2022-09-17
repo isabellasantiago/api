@@ -4,7 +4,6 @@ import {
   Column,
   DataType,
   ForeignKey,
-  HasMany,
   Model,
   PrimaryKey,
   Table,
@@ -61,16 +60,6 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
     }),
   })
   level: LevelType;
-
-  @Column({
-    type: DataType.BOOLEAN,
-  })
-  pcd: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-  })
-  acceptsAllLevels: boolean;
 
   @Column
   paused: boolean;
