@@ -40,6 +40,10 @@ export class UserService {
     return userCreated;
   }
 
+  async deleteUser(id: number): Promise<boolean> {
+    return await this.userRepository.deleteUser(id);
+  }
+
   async loadAllUsers(): Promise<UserModel[]> {
     return await this.userRepository.loadAllUsers();
   }
@@ -52,11 +56,11 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<UserModel> {
-    const isEmailValid = this.validatorRepositoryService.isEmail(email)
+    const isEmailValid = this.validatorRepositoryService.isEmail(email);
     if (!isEmailValid) throw new BadRequestException('Invalid params');
 
     const user = await this.userRepository.getUserByEmail(email);
-    if(!user) throw new NotFoundException('User not Found');
+    if (!user) throw new NotFoundException('User not Found');
 
     return user;
   }

@@ -43,20 +43,30 @@ export class AuthService {
   }
 
   async getIDByUserType(type: string, userID: number): Promise<number> {
+    const findUser = await this.userRepositoryService.getUserByID(userID);
+
+    if (!findUser) throw new NotFoundException('User Not Found');
+
+    console.log('userId', userID);
     if (type === UserType.COMPANY) {
       const company = await this.companyRepositoryService.getCompanyByUserID(
         userID,
       );
+      if (!company) throw new NotFoundException('Company Not Found');
 
       return company.id;
     }
     const candidate =
       await this.candidateRepositoryService.getCandidateByUserID(userID);
+    if (!candidate) throw new NotFoundException('Candidate Not Found');
 
     return candidate.id;
   }
 
   async login(user: UserModel) {
+    const userExists = await this.userRepositoryService.getUserByID(user.id);
+    if (!userExists) throw new NotFoundException('User Not Found');
+
     const payload = {
       email: user.email,
       sub: await this.getIDByUserType(user.type, user.id),

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -49,5 +50,12 @@ export class UserController {
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
   ): Promise<boolean> {
     return await this.userService.inactiveOrActiveUser(param.id);
+  }
+
+  @Delete('/:id')
+  async deleteUser(
+    @Param(new ValidationPipe({ transform: true })) param: { id: number },
+  ): Promise<boolean> {
+    return await this.userService.deleteUser(param.id);
   }
 }
