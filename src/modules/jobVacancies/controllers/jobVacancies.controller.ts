@@ -76,7 +76,6 @@ export class JobVacancieController {
     @Param(new ValidationPipe({ transform: true })) param: { id: number },
     @Body(new ValidationPipe({ transform: true })) data: CreateJobVacanciesDTO,
   ) {
-    console.log('id', param.id);
     return await this.jobVacanciesService.updateJobVacancie(param.id, data);
   }
 
