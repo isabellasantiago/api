@@ -12,7 +12,6 @@ import {
 } from 'src/entities';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
 import { CreateOrUpdateCvDTO } from 'src/modules/cv/dto/create-cv.dto';
-import { ICv } from 'src/modules/cv/dto/cv-complete.output';
 
 export class CvRepositoryService {
   constructor(
@@ -67,7 +66,7 @@ export class CvRepositoryService {
         contractType,
       });
 
-      if (academics) {
+      if (academics && academics.length) {
         const academic = await Promise.all(
           academics.map(
             async ({
@@ -90,7 +89,7 @@ export class CvRepositoryService {
         academicsInfo = academic && academic.length ? academic : [];
       }
 
-      if (languages) {
+      if (languages && languages.length) {
         languagesInfo = await Promise.all(
           languages.map(
             async ({ languageLevel, languageName }) =>
@@ -103,7 +102,7 @@ export class CvRepositoryService {
         );
       }
 
-      if (previousJobs) {
+      if (previousJobs && previousJobs.length) {
         previousJobsInfo = await Promise.all(
           previousJobs.map(
             async ({
@@ -245,11 +244,13 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      academics.map(async (academic) => {
-        await this.academicsEntity.create(academic);
-      }),
-    );
+    if (academics && academics.length) {
+      await Promise.all(
+        academics.map(async (academic) => {
+          await this.academicsEntity.create(academic);
+        }),
+      );
+    }
 
     const languagesArray = await this.getAllLanguages(candidateID);
     await Promise.all(
@@ -259,11 +260,13 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      languages.map(
-        async (language) => await this.languagesEntity.create(language),
-      ),
-    );
+    if (languages && languages.length) {
+      await Promise.all(
+        languages.map(
+          async (language) => await this.languagesEntity.create(language),
+        ),
+      );
+    }
 
     const previousJobsArray = await this.getAllPreviousJobs(candidateID);
     await Promise.all(
@@ -275,12 +278,14 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      previousJobs.map(
-        async (previousJob) =>
-          await this.previousJobsEntity.create(previousJob),
-      ),
-    );
+    if (previousJobs && previousJobs.length) {
+      await Promise.all(
+        previousJobs.map(
+          async (previousJob) =>
+            await this.previousJobsEntity.create(previousJob),
+        ),
+      );
+    }
 
     const personalDataUpdated = await this.getPersonalData(candidateID);
     const academicUpdated = await this.getAllAcademics(candidateID);

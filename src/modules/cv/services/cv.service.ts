@@ -50,7 +50,7 @@ export class CvService {
 
     const cv = await this.cvRepository.getResume(candidateID);
 
-    if (!cv.personalData) {
+    if (!cv) {
       cv.personalData.phone = candidate?.phone;
     }
 
