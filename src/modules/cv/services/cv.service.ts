@@ -4,11 +4,10 @@ import {
   Inject,
   NotFoundException,
 } from '@nestjs/common';
-import { PersonalDataModel } from 'src/common/models/personalData.model';
+import { CvModel } from 'src/common/models/cv.model';
 import { CandidateRepositoryService } from 'src/repository/services/candidate/candidate.repository.service';
 import { CvRepositoryService } from 'src/repository/services/cv/cv.repository.service';
 import { CreateOrUpdateCvDTO } from '../dto/create-cv.dto';
-import { ICv } from '../dto/cv-complete.output';
 
 export class CvService {
   constructor(
@@ -18,59 +17,47 @@ export class CvService {
     private readonly candidateRepository: CandidateRepositoryService,
   ) {}
 
-  async createCv(data: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
+  async createCv(data: CreateOrUpdateCvDTO): Promise<CvModel> {
     const candidate = await this.candidateRepository.getCandidateByID(
       data.candidateID,
     );
+    if (!candidate) throw new NotFoundException('Candidate not found');
+
     const cvAlreadyExists = await this.cvRepository.getPersonalData(
       candidate.id,
     );
-
     if (cvAlreadyExists)
       throw new ConflictException('Curriculum already exists');
-
-    if (!candidate) throw new NotFoundException('Candidate not found');
 
     if (!data) throw new BadRequestException('Invalid params');
 
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
-    const personalData = await this.cvRepository.createCv(data);
+    const cv = await this.cvRepository.createCv({
+      ...data,
+      phone: candidate.phone,
+    });
 
-    return personalData;
+    return cv;
   }
 
-  async getCompleteCv(candidateID: number): Promise<ICv> {
+  async getResume(candidateID: number): Promise<CvModel> {
     const candidate = await this.candidateRepository.getCandidateByID(
       candidateID,
     );
 
     if (!candidate) throw new NotFoundException('Candiadate Not Found');
 
-    const personalData = await this.cvRepository.getPersonalData(candidateID);
+    const cv = await this.cvRepository.getResume(candidateID);
 
-    if (!personalData)
-      throw new NotFoundException('This candidate has no resume');
-
-    const academics = await this.cvRepository.getAllAcademics(candidateID);
-
-    const languages = await this.cvRepository.getAllLanguages(candidateID);
-
-    const previousJobs = await this.cvRepository.getAllPreviousJobs(
-      candidateID,
-    );
-
-    const cv = {
-      personalData,
-      academics,
-      languages,
-      previousJobs,
-    };
+    if (!cv.personalData) {
+      cv.personalData.phone = candidate?.phone;
+    }
 
     return cv;
   }
 
-  async updateCv(data: CreateOrUpdateCvDTO): Promise<ICv> {
+  async updateCv(data: CreateOrUpdateCvDTO): Promise<CvModel> {
     const {
       candidateID,
       imageURL,

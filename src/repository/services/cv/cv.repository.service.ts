@@ -1,5 +1,6 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { AcademicsInformationsModel } from 'src/common/models/academicsInformation.model';
+import { CvModel } from 'src/common/models/cv.model';
 import { LanguagesInformationModel } from 'src/common/models/languagesInformation.model';
 import { PersonalDataModel } from 'src/common/models/personalData.model';
 import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
@@ -43,10 +44,14 @@ export class CvRepositoryService {
     academics,
     languages,
     previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
+  }: CreateOrUpdateCvDTO): Promise<CvModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
 
     try {
+      let academicsInfo: AcademicsInformationsModel[] | void[] = [];
+      let languagesInfo: LanguagesInformationModel[] | void[] = [];
+      let previousJobsInfo: PreviousJobsModel[] | void[] = [];
+
       const personalData = await this.personalDataEntity.create({
         candidateID,
         imageURL,
@@ -63,7 +68,7 @@ export class CvRepositoryService {
       });
 
       if (academics) {
-        await Promise.all(
+        const academic = await Promise.all(
           academics.map(
             async ({
               instituitionName,
@@ -81,10 +86,12 @@ export class CvRepositoryService {
             },
           ),
         );
+
+        academicsInfo = academic && academic.length ? academic : [];
       }
 
       if (languages) {
-        await Promise.all(
+        languagesInfo = await Promise.all(
           languages.map(
             async ({ languageLevel, languageName }) =>
               await this.languagesEntity.create({
@@ -97,7 +104,7 @@ export class CvRepositoryService {
       }
 
       if (previousJobs) {
-        await Promise.all(
+        previousJobsInfo = await Promise.all(
           previousJobs.map(
             async ({
               previousCompanyName,
@@ -120,7 +127,13 @@ export class CvRepositoryService {
         );
       }
 
-      return personalData;
+      return {
+        candidateID,
+        personalData,
+        academicsInfo,
+        languagesInfo,
+        previousJobsInfo,
+      };
     } catch (err) {
       await transaction.rollback();
       console.log(err.message);
@@ -203,7 +216,7 @@ export class CvRepositoryService {
     academics,
     languages,
     previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<ICv> {
+  }: CreateOrUpdateCvDTO): Promise<CvModel> {
     const personalData = await this.personalDataEntity.findOne({
       where: { candidateID },
     });
@@ -275,12 +288,43 @@ export class CvRepositoryService {
     const previousJobsUpdated = await this.getAllPreviousJobs(candidateID);
 
     const resume = {
+      candidateID,
       personalData: personalDataUpdated,
-      academics: academicUpdated,
-      languages: languageUpdated,
-      previousJobs: previousJobsUpdated,
+      academicsInfo: academicUpdated,
+      languagesInfo: languageUpdated,
+      previousJobsInfo: previousJobsUpdated,
     };
 
     return resume;
+  }
+
+  async getResume(id: number): Promise<CvModel> {
+    const candidate = await this.candidateEntity.findByPk(id);
+
+    if (candidate) {
+      const pd = await this.personalDataEntity.findOne({
+        where: { candidateID: candidate.id },
+      });
+
+      const academicsInfo = await this.academicsEntity.findAll({
+        where: { candidateID: candidate.id },
+      });
+
+      const languagesInfo = await this.languagesEntity.findAll({
+        where: { candidateID: candidate.id },
+      });
+
+      const previousJobsInfo = await this.previousJobsEntity.findAll({
+        where: { candidateID: candidate.id },
+      });
+
+      return {
+        candidateID: id,
+        personalData: pd,
+        academicsInfo,
+        languagesInfo,
+        previousJobsInfo,
+      };
+    }
   }
 }

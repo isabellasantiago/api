@@ -5,4 +5,5 @@ export enum AcademicFormationTypes {
   GRADUATE_SCHOOL = 4,
   MASTERS_DEGREE = 5,
   DOCTORATE_DEGREE = 6,
+  OTHERS = 7,
 }
