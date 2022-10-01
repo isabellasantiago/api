@@ -17,9 +17,12 @@ export class CvService {
     private readonly candidateRepository: CandidateRepositoryService,
   ) {}
 
-  async createCv(data: CreateOrUpdateCvDTO): Promise<CvModel> {
+  async createCv(
+    data: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const candidate = await this.candidateRepository.getCandidateByID(
-      data.candidateID,
+      candidateID,
     );
     if (!candidate) throw new NotFoundException('Candidate not found');
 
@@ -33,10 +36,13 @@ export class CvService {
 
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
-    const cv = await this.cvRepository.createCv({
-      ...data,
-      phone: candidate.phone,
-    });
+    const cv = await this.cvRepository.createCv(
+      {
+        ...data,
+        phone: candidate.phone,
+      },
+      candidateID,
+    );
 
     return cv;
   }
@@ -57,9 +63,11 @@ export class CvService {
     return cv;
   }
 
-  async updateCv(data: CreateOrUpdateCvDTO): Promise<CvModel> {
+  async updateCv(
+    data: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const {
-      candidateID,
       imageURL,
       linkedinURL,
       naturalness,
@@ -87,22 +95,24 @@ export class CvService {
 
     if (!cvAlreadyExists) throw new NotFoundException('Curriculum not found');
 
-    return await this.cvRepository.updateCv({
+    return await this.cvRepository.updateCv(
+      {
+        imageURL,
+        linkedinURL,
+        naturalness,
+        birthDate,
+        state,
+        city,
+        phone,
+        field,
+        contractType,
+        level,
+        role,
+        academics,
+        languages,
+        previousJobs,
+      },
       candidateID,
-      imageURL,
-      linkedinURL,
-      naturalness,
-      birthDate,
-      state,
-      city,
-      phone,
-      field,
-      contractType,
-      level,
-      role,
-      academics,
-      languages,
-      previousJobs,
-    });
+    );
   }
 }

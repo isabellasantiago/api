@@ -47,7 +47,6 @@ export class AuthService {
 
     if (!findUser) throw new NotFoundException('User Not Found');
 
-    console.log('userId', userID);
     if (type === UserType.COMPANY) {
       const company = await this.companyRepositoryService.getCompanyByUserID(
         userID,

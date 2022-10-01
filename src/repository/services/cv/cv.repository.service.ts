@@ -27,23 +27,25 @@ export class CvRepositoryService {
     private readonly previousJobsEntity: typeof PreviousJobsEntity,
   ) {}
 
-  async createCv({
-    candidateID,
-    imageURL,
-    linkedinURL,
-    naturalness,
-    birthDate,
-    state,
-    city,
-    phone,
-    field,
-    contractType,
-    level,
-    role,
-    academics,
-    languages,
-    previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<CvModel> {
+  async createCv(
+    {
+      imageURL,
+      linkedinURL,
+      naturalness,
+      birthDate,
+      state,
+      city,
+      phone,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+    }: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
 
     try {
@@ -199,23 +201,25 @@ export class CvRepositoryService {
     return [];
   }
 
-  async updateCv({
-    candidateID,
-    imageURL,
-    linkedinURL,
-    naturalness,
-    birthDate,
-    state,
-    city,
-    phone,
-    field,
-    contractType,
-    level,
-    role,
-    academics,
-    languages,
-    previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<CvModel> {
+  async updateCv(
+    {
+      imageURL,
+      linkedinURL,
+      naturalness,
+      birthDate,
+      state,
+      city,
+      phone,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+    }: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const personalData = await this.personalDataEntity.findOne({
       where: { candidateID },
     });
