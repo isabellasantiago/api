@@ -6,6 +6,9 @@ import { PreviousJobsModel } from './previousJobs.model';
 
 export class CvModel {
   @ApiProperty()
+  id: number;
+
+  @ApiProperty()
   candidateID: number;
 
   @ApiProperty()

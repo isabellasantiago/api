@@ -23,13 +23,14 @@ export class CvController {
 
   @Roles(UserType.CANDIDATE)
   @UseGuards(JwtAuthGuard, RolesGuards)
-  @Post('/')
+  @Post('/:id')
   async createCv(
     @Param(new ValidationPipe({ transform: true }))
-    param: { candidateID: number },
+    param: { id: number },
     @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
   ): Promise<CvModel> {
-    return await this.cvService.createCv(data, param.candidateID);
+    console.log('controller', data);
+    return await this.cvService.createCv(data, param.id);
   }
 
   @Get('/:candidateID')
@@ -44,12 +45,12 @@ export class CvController {
 
   @Roles(UserType.CANDIDATE)
   @UseGuards(JwtAuthGuard, RolesGuards)
-  @Put('/')
+  @Put('/:id')
   async updateCv(
     @Param(new ValidationPipe({ transform: true }))
-    param: { candidateID: number },
+    param: { id: number },
     @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
   ): Promise<CvModel> {
-    return await this.cvService.updateCv(data, param.candidateID);
+    return await this.cvService.updateCv(data, param.id);
   }
 }

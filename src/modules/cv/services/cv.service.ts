@@ -34,6 +34,8 @@ export class CvService {
 
     if (!data) throw new BadRequestException('Invalid params');
 
+    console.log('birthDate', data.birthDate);
+
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
     const cv = await this.cvRepository.createCv(

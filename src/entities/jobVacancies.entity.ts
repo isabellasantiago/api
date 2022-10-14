@@ -4,12 +4,14 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { ContractTypes } from 'src/common/enums/contractType.enum';
 import { LevelType } from 'src/common/enums/levelType.enum';
+import { CandidatesByJobVacancieEntity } from './candidatesByJobVacancie.entity';
 import { CompanyEntity } from './company.entity';
 @Table({ tableName: 'JobVacancies' })
 export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
@@ -75,4 +77,7 @@ export class JobVacanciesEntity extends Model<JobVacanciesEntity> {
     defaultValue: DataType.NOW,
   })
   updatedAt: Date;
+
+  @HasMany(() => CandidatesByJobVacancieEntity, 'jobVacancieID')
+  CandidatesByJobVacancie: CandidatesByJobVacancieEntity[];
 }
