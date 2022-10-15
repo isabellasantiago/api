@@ -88,7 +88,7 @@ export class CvRepositoryService {
           ),
         );
 
-        academicsInfo = academic && academic?.length ? academic : [];
+        academicsInfo = academic?.length ? academic : [];
       }
 
       if (languages?.length) {
@@ -282,8 +282,6 @@ export class CvRepositoryService {
           }),
       ),
     );
-
-    console.log('pv', previousJobs?.length)
 
     if (previousJobs?.length) {
       await Promise.all(
