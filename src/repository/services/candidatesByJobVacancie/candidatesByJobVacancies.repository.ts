@@ -1,26 +1,74 @@
 import { Inject } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { CandidateModel } from "src/common/models/candidate.model";
 import { CandidatesByJobVacancieModel } from "src/common/models/candidatesByJobVacancie.model";
 import { CandidateEntity, JobVacanciesEntity } from "src/entities";
 import { CandidatesByJobVacancieEntity } from "src/entities/candidatesByJobVacancie.entity";
+import { AllCandidatesByJobVacancieID } from "src/modules/candidatesByJobVacancie/dto/all-candidates-by-jobVacancieID.dto";
 import { CreateDTO } from "src/modules/candidatesByJobVacancie/dto/create.dto";
+import { CvRepositoryService } from "../cv/cv.repository.service";
 
 export class CandidatesByJobVacancieRepository {
     constructor(
         @InjectModel(CandidatesByJobVacancieEntity) private readonly candidatesByJobVacancieEntity: typeof CandidatesByJobVacancieEntity,
         @InjectModel(CandidateEntity) private readonly candidateEntity: typeof CandidateEntity,
         @InjectModel(JobVacanciesEntity) private readonly jobVacanciesEntity: typeof JobVacanciesEntity,
+        @Inject(CvRepositoryService) private readonly cvRepository: CvRepositoryService,
     ){}
 
-    async create({jobVacancieID, candidateID, percentage = 0 }: CreateDTO): Promise<CandidatesByJobVacancieModel>{
+    async create({jobVacancieID, candidateID, percentage = 0 }: CreateDTO): Promise<CandidatesByJobVacancieModel> {
         const candidateByJV = await this.candidatesByJobVacancieEntity.create({
             jobVacancieID,
             candidateID,
             isApplied: true,
             matchPercentage: percentage,
-            
         })
         return candidateByJV;
+    }
+
+    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<AllCandidatesByJobVacancieID[]> {
+        const relations = await this.candidatesByJobVacancieEntity.findAll({
+            where: {
+                jobVacancieID,
+                isApplied: true,
+            },
+            include: [
+                {
+                    model: CandidateEntity,
+                    required: true,
+                }
+            ]
+        })
+
+        const result = await Promise.all(relations.map(async (data) => {
+            const { candidate }  = data;
+            console.log('candidate', candidate)
+            const personalData = await this.cvRepository.getPersonalData(candidate.id, true);
+            console.log('pd', personalData)
+            return {
+                ...data,
+                candidateInfo: {
+                    candidate,
+                    personalData
+                }
+            }
+
+        }))
+
+        return result;
+        
+    }
+
+    async getJobVacancieMatchByID(jobVacancieID: number): Promise<CandidatesByJobVacancieModel | undefined>{
+        const jobVacancie = await this.candidatesByJobVacancieEntity.findOne({
+            where: {
+                jobVacancieID,
+                isApplied: false
+            }
+        })
+
+        return jobVacancie ? jobVacancie : undefined;
+
     }
 
     async getCandidates(): Promise<CandidatesByJobVacancieModel[]>{
@@ -34,6 +82,18 @@ export class CandidatesByJobVacancieRepository {
         });
 
         return candidates;
+    }
+
+    async checkIfIsApplied(candidateID: number, jobVacancieID: number): Promise<CandidatesByJobVacancieModel> {
+        const isApplied = await this.candidatesByJobVacancieEntity.findOne({
+            where: {
+                candidateID,
+                jobVacancieID,
+                isApplied: true,
+            }
+        })
+
+        return isApplied;
     }
 
     async getCandidateById(candidateID: number): Promise<CandidatesByJobVacancieModel>{
@@ -73,5 +133,9 @@ export class CandidatesByJobVacancieRepository {
         const update = await jobVacancieMatch.update({...jobVacancieMatch, matchPercentage: percentage});
 
        return update;
+    }
+
+    async getAllJobVacancies(): Promise<CandidatesByJobVacancieModel[]>{
+        return await this.candidatesByJobVacancieEntity.findAll();
     }
 }

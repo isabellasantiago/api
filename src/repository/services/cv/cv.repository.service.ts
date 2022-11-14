@@ -142,12 +142,18 @@ export class CvRepositoryService {
     }
   }
 
-  async getPersonalData(candidateID: number): Promise<PersonalDataModel> {
+  async getPersonalData(candidateID: number, include?: boolean): Promise<PersonalDataModel> {
     const candidate = await this.candidateEntity.findByPk(candidateID);
 
     if (candidate) {
       const pd = await this.personalDataEntity.findOne({
         where: { candidateID: candidate.id },
+        include: [
+          {
+            model: CandidateEntity, 
+            required: include,
+          }
+        ]
       });
 
       if (pd) return pd;

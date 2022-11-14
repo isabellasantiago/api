@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Inject, Param, Patch, Post, ValidationPipe } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { CandidatesByJobVacancieModel } from "src/common/models/candidatesByJobVacancie.model";
+import { AllCandidatesByJobVacancieID } from "../dto/all-candidates-by-jobVacancieID.dto";
 import { CreateDTO } from "../dto/create.dto";
+import { JobVacancieMatchDTO } from "../dto/job-vacancie-match.dto";
 import { CandidatesByJobVacancieService } from "../service/candidatesByJobVacancie.service";
 
 @ApiTags('Candidates by job vacancie')
@@ -12,6 +14,18 @@ export class CandidatesByJobVacancieController {
     @Post('/')
     async create(@Body(new ValidationPipe({ transform: true})) data: CreateDTO): Promise<CandidatesByJobVacancieModel | string> {
         return await this.candidatesByJobVacancieService.create(data);
+    }
+
+    @Get('/:candidateID/possible-match')
+    async getNewJobVacancies(@Param(new ValidationPipe({ transform: true}))param: { candidateID: number }): Promise<JobVacancieMatchDTO[]> {
+        return await this.candidatesByJobVacancieService.getNewJobVacancies(param.candidateID);
+    }
+
+    @Get('/:jobVacancieID/candidates')
+    async getAllCandidatesByJobVacancie(
+        @Param(new ValidationPipe({ transform: true})) param: { jobVacancieID: number}
+    ): Promise<AllCandidatesByJobVacancieID[]> {
+        return await this.candidatesByJobVacancieService.getAllCandidatesByJobVacancieID(param.jobVacancieID);
     }
 
     @Get('/')
