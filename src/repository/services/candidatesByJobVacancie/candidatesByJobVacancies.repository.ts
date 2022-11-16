@@ -4,7 +4,6 @@ import { CandidateModel } from "src/common/models/candidate.model";
 import { CandidatesByJobVacancieModel } from "src/common/models/candidatesByJobVacancie.model";
 import { CandidateEntity, JobVacanciesEntity } from "src/entities";
 import { CandidatesByJobVacancieEntity } from "src/entities/candidatesByJobVacancie.entity";
-import { AllCandidatesByJobVacancieID } from "src/modules/candidatesByJobVacancie/dto/all-candidates-by-jobVacancieID.dto";
 import { CreateDTO } from "src/modules/candidatesByJobVacancie/dto/create.dto";
 import { CvRepositoryService } from "../cv/cv.repository.service";
 
@@ -26,7 +25,7 @@ export class CandidatesByJobVacancieRepository {
         return candidateByJV;
     }
 
-    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<AllCandidatesByJobVacancieID[]> {
+    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<CandidatesByJobVacancieModel[]> {
         const relations = await this.candidatesByJobVacancieEntity.findAll({
             where: {
                 jobVacancieID,
@@ -39,33 +38,12 @@ export class CandidatesByJobVacancieRepository {
                 }
             ]
         })
-
-        const result = await Promise.all(relations.map(async (data) => {
-            const { candidate }  = data;
-            console.log('candidate', candidate)
-            const personalData = await this.cvRepository.getPersonalData(candidate.id, true);
-            console.log('pd', personalData)
-            return {
-                ...data,
-                candidateInfo: {
-                    candidate,
-                    personalData
-                }
-            }
-
-        }))
-
-        return result;
+    return relations
         
     }
 
-    async getJobVacancieMatchByID(jobVacancieID: number): Promise<CandidatesByJobVacancieModel | undefined>{
-        const jobVacancie = await this.candidatesByJobVacancieEntity.findOne({
-            where: {
-                jobVacancieID,
-                isApplied: false
-            }
-        })
+    async getJobVacancieMatchByID(id: number): Promise<CandidatesByJobVacancieModel | undefined>{
+        const jobVacancie = await this.candidatesByJobVacancieEntity.findByPk(id)
 
         return jobVacancie ? jobVacancie : undefined;
 

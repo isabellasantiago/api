@@ -1,13 +1,15 @@
 import { ConflictException, Inject, NotFoundException } from "@nestjs/common";
 import { CandidatesByJobVacancieModel } from "src/common/models/candidatesByJobVacancie.model";
+import { PreviousJobsModel } from "src/common/models/previousJobs.model";
 import { CandidateRepositoryService } from "src/repository/services/candidate/candidate.repository.service";
 import { CandidatesByJobVacancieRepository } from "src/repository/services/candidatesByJobVacancie/candidatesByJobVacancies.repository";
 import { CvRepositoryService } from "src/repository/services/cv/cv.repository.service";
 import { JobVacanciesRepositoryService } from "src/repository/services/jobVacancies/jobVacancies.repository.service";
-import { AllCandidatesByJobVacancieID } from "../dto/all-candidates-by-jobVacancieID.dto";
+import { CandidatesInfoDTO } from "../dto/candidates-info.dto";
 import { CreateDTO } from "../dto/create.dto";
 import { JobVacancieMatchDTO } from "../dto/job-vacancie-match.dto";
 import { breakStr, compareStr } from "./factory/compare-string";
+import { getLastJobFactory } from "./factory/get-last-job";
 
 export class CandidatesByJobVacancieService {
     constructor(
@@ -121,6 +123,27 @@ export class CandidatesByJobVacancieService {
         return candidates;
     }
 
+    async getCandidateInfos(matchID: number, candidatesIds: number[]): Promise<CandidatesInfoDTO[]> {
+        const candidatesMap = candidatesIds.map(async (id) => {
+            const candidate = await this.candidateRepository.getCandidateByID(id);
+            const resume = await this.cvRepository.getResume(id);
+            const { profession, experienceTime } = getLastJobFactory(resume?.previousJobsInfo as PreviousJobsModel[]);
+            const match = await this.candidatesByJobVacancieRepository.getJobVacancieMatchByID(matchID);
+
+            return {
+                candidateID: id,
+                name: candidate?.name,
+                lastName: candidate?.lastName,
+                imageURL: resume?.personalData?.imageURL,
+                profession: profession,
+                experienceTime: experienceTime,
+                percentage: match.matchPercentage,
+            }
+        })
+        const candidates = await Promise.all(candidatesMap);
+        return candidates;
+    }
+
     async getCandidateById(candidateID: number): Promise<CandidatesByJobVacancieModel> {
         const candidateExists = await this.candidateRepository.getCandidateByID(candidateID);
         if(!candidateExists) throw new NotFoundException('Candidate not found');
@@ -185,7 +208,7 @@ export class CandidatesByJobVacancieService {
         return updated ? true : false;
     }
 
-    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<AllCandidatesByJobVacancieID[]> {
+    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<CandidatesByJobVacancieModel[]> {
         const jobVacancie = await this.jobVacancieRepository.getJobVacancie(jobVacancieID);
         if (!jobVacancie) throw new NotFoundException('Job Vacancie Not Found');
 
