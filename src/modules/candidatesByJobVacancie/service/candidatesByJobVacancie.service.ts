@@ -123,12 +123,14 @@ export class CandidatesByJobVacancieService {
         return candidates;
     }
 
-    async getCandidateInfos(matchID: number, candidatesIds: number[]): Promise<CandidatesInfoDTO[]> {
+    async getCandidateInfos(jobVacancieId: number, candidatesIds: number[]): Promise<CandidatesInfoDTO[]> {
         const candidatesMap = candidatesIds.map(async (id) => {
             const candidate = await this.candidateRepository.getCandidateByID(id);
             const resume = await this.cvRepository.getResume(id);
+            if(!candidate || !resume) return;
+
             const { profession, experienceTime } = getLastJobFactory(resume?.previousJobsInfo as PreviousJobsModel[]);
-            const match = await this.candidatesByJobVacancieRepository.getJobVacancieMatchByID(matchID);
+            const match = await this.candidatesByJobVacancieRepository.getJobVacancieMatchByID(jobVacancieId);
 
             return {
                 candidateID: id,
@@ -208,10 +210,14 @@ export class CandidatesByJobVacancieService {
         return updated ? true : false;
     }
 
-    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<CandidatesByJobVacancieModel[]> {
+    async getAllCandidatesByJobVacancieID(jobVacancieID: number): Promise<CandidatesInfoDTO[]> {
         const jobVacancie = await this.jobVacancieRepository.getJobVacancie(jobVacancieID);
         if (!jobVacancie) throw new NotFoundException('Job Vacancie Not Found');
+        const appliers = await this.candidatesByJobVacancieRepository.getAllCandidatesByJobVacancieID(jobVacancieID);
+        if(!appliers) throw new NotFoundException('Match does not exists');
+        const candidatesIds = appliers?.map((applierMatch) => applierMatch.candidateID);
+        const candidatesInfos = await this.getCandidateInfos(jobVacancieID, candidatesIds);
 
-        return await this.candidatesByJobVacancieRepository.getAllCandidatesByJobVacancieID(jobVacancieID);
+        return candidatesInfos;
     }
 }

@@ -13,7 +13,7 @@ export const getLastJobFactory = (previousJobs: PreviousJobsModel[]) => {
         return job?.toDate === null || !job.toDate
     });
     if(prevJob) {
-        const experienceTime = differenceInYears(new Date(prevJob.fromDate), today)
+        const experienceTime = differenceInYears(today, prevJob.fromDate)
         return {
             profession: prevJob?.role,
             experienceTime: experienceTime <= 0 ? 0 : experienceTime
@@ -27,7 +27,9 @@ export const getLastJobFactory = (previousJobs: PreviousJobsModel[]) => {
         const isTheSameDate = isEqual(job.toDate, closestDate);
         return isTheSameDate ?? job
     });
-    const experienceTime = differenceInYears(lastJob.fromDate, today);
+    const experienceTime = differenceInYears(lastJob.toDate, lastJob.fromDate);
+    console.log(experienceTime)
+    
 
     return {
         profession: lastJob?.role,

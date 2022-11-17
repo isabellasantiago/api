@@ -25,7 +25,7 @@ export class CandidatesByJobVacancieController {
     @Get('/:jobVacancieID/candidates')
     async getAllCandidatesByJobVacancie(
         @Param(new ValidationPipe({ transform: true})) param: { jobVacancieID: number}
-    ): Promise<CandidatesByJobVacancieModel[]> {
+    ): Promise<CandidatesInfoDTO[]> {
         return await this.candidatesByJobVacancieService.getAllCandidatesByJobVacancieID(param.jobVacancieID);
     }
 
