@@ -27,8 +27,7 @@ export class CvRepositoryService {
     private readonly previousJobsEntity: typeof PreviousJobsEntity,
   ) {}
 
-  async createCv(
-    {
+  async createCv({
       imageURL,
       linkedinURL,
       naturalness,
@@ -47,7 +46,6 @@ export class CvRepositoryService {
     candidateID: number,
   ): Promise<CvModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
-
     try {
       let academicsInfo: AcademicsInformationsModel[] | void[] = [];
       let languagesInfo: LanguagesInformationModel[] | void[] = [];
@@ -69,6 +67,7 @@ export class CvRepositoryService {
       });
 
       if (academics?.length) {
+        console.log('academics', academics);
         const academic = await Promise.all(
           academics.map(
             async ({
@@ -87,11 +86,11 @@ export class CvRepositoryService {
             },
           ),
         );
-
         academicsInfo = academic?.length ? academic : [];
       }
 
       if (languages?.length) {
+        console.log('languages', languages);
         languagesInfo = await Promise.all(
           languages.map(
             async ({ languageLevel, languageName }) =>
@@ -105,6 +104,7 @@ export class CvRepositoryService {
       }
 
       if (previousJobs?.length) {
+        console.log('previousJobs', previousJobs);
         previousJobsInfo = await Promise.all(
           previousJobs.map(
             async ({

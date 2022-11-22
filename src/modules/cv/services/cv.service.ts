@@ -21,6 +21,8 @@ export class CvService {
     data: CreateOrUpdateCvDTO,
     candidateID: number,
   ): Promise<CvModel> {
+    if (!data) throw new BadRequestException('Invalid params');
+    console.log('data', data);
     const candidate = await this.candidateRepository.getCandidateByID(
       candidateID,
     );
@@ -32,14 +34,11 @@ export class CvService {
     if (cvAlreadyExists)
       throw new ConflictException('Curriculum already exists');
 
-    if (!data) throw new BadRequestException('Invalid params');
-
     console.log('birthDate', data.birthDate);
 
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
-    const cv = await this.cvRepository.createCv(
-      {
+    const cv = await this.cvRepository.createCv({
         ...data,
         phone: candidate.phone,
       },
