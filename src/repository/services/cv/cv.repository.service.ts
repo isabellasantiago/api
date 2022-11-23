@@ -65,67 +65,67 @@ export class CvRepositoryService {
         role,
         contractType,
       });
-
-      if (academics?.length) {
-        console.log('academics', academics);
-        const academic = await Promise.all(
-          academics.map(
-            async ({
+      
+      if (academics?.length > 0) {
+        const promises = academics.map(
+          async ({
+            instituitionName,
+            academicFormation,
+            academicFormationStatus,
+            courseName,
+            graduationStartDate,
+            graduationEndDate
+          }) => {
+            await this.academicsEntity.create({
+              candidateID,
               instituitionName,
+              courseName,
               academicFormation,
               academicFormationStatus,
-              courseName,
-            }) => {
-              await this.academicsEntity.create({
-                candidateID,
-                instituitionName,
-                courseName,
-                academicFormation,
-                academicFormationStatus,
-              });
-            },
-          ),
+              graduationStartDate,
+              graduationEndDate
+            });
+          },
         );
-        academicsInfo = academic?.length ? academic : [];
+        const academic = await Promise.all(promises);
+        academicsInfo = academic?.length > 0 ? academic : [];
       }
 
-      if (languages?.length) {
-        console.log('languages', languages);
-        languagesInfo = await Promise.all(
-          languages.map(
-            async ({ languageLevel, languageName }) =>
-              await this.languagesEntity.create({
-                candidateID,
-                languageName,
-                languageLevel,
-              }),
-          ),
-        );
+      if (languages?.length > 0) {
+        const promises = languages.map(
+          async ({ languageLevel, languageName }) =>
+            await this.languagesEntity.create({
+              candidateID,
+              languageName,
+              languageLevel,
+            }),
+        ),
+        languagesArray = await Promise.all(promises);
+        languagesInfo = languagesArray?.length > 0 ? languagesArray : []; 
       }
 
-      if (previousJobs?.length) {
-        console.log('previousJobs', previousJobs);
-        previousJobsInfo = await Promise.all(
-          previousJobs.map(
-            async ({
+      if (previousJobs?.length > 0) {
+        const promises = previousJobs.map(
+          async ({
+            previousCompanyName,
+            role,
+            level,
+            fromDate,
+            toDate,
+            jobDescription,
+          }) =>
+            await this.previousJobsEntity.create({
+              candidateID,
               previousCompanyName,
               role,
               level,
               fromDate,
               toDate,
               jobDescription,
-            }) =>
-              await this.previousJobsEntity.create({
-                candidateID,
-                previousCompanyName,
-                role,
-                level,
-                fromDate,
-                toDate,
-                jobDescription,
-              }),
-          ),
+            }),
         );
+        const pvJobs = await Promise.all(promises);
+        previousJobsInfo = pvJobs?.length > 0 ? pvJobs : [];
       }
 
       return {
@@ -138,7 +138,7 @@ export class CvRepositoryService {
       };
     } catch (err) {
       await transaction.rollback();
-      console.log(err.message);
+      console.log(err.message)
     }
   }
 
@@ -315,7 +315,7 @@ export class CvRepositoryService {
     return resume;
   }
 
-  async getResume(candidateId: number): Promise<CvModel> {
+  async getResume(candidateId: number): Promise<CvModel | undefined> {
     const candidate = await this.candidateEntity.findByPk(candidateId);
 
     if (!candidate) return undefined;
@@ -336,13 +336,13 @@ export class CvRepositoryService {
       where: { candidateID: candidate.id },
     });
 
-    return {
-      id: pd.id,
-      candidateID: pd.candidateID,
+    return pd  ? {
+      id: pd?.id,
+      candidateID: pd?.candidateID,
       personalData: pd,
       academicsInfo,
       languagesInfo,
       previousJobsInfo,
-    };
+    } : undefined;
   }
 }

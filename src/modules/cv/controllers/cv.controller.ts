@@ -29,7 +29,6 @@ export class CvController {
     param: { id: number },
     @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
   ): Promise<CvModel> {
-    console.log('controller', data);
     return await this.cvService.createCv(data, param.id);
   }
 

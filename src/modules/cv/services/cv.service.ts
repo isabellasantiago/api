@@ -22,7 +22,6 @@ export class CvService {
     candidateID: number,
   ): Promise<CvModel> {
     if (!data) throw new BadRequestException('Invalid params');
-    console.log('data', data);
     const candidate = await this.candidateRepository.getCandidateByID(
       candidateID,
     );
@@ -34,7 +33,6 @@ export class CvService {
     if (cvAlreadyExists)
       throw new ConflictException('Curriculum already exists');
 
-    console.log('birthDate', data.birthDate);
 
     if (!data.birthDate) throw new BadRequestException('Invalid birth date');
 
@@ -56,10 +54,6 @@ export class CvService {
     if (!candidate) throw new NotFoundException('Candiadate Not Found');
 
     const cv = await this.cvRepository.getResume(candidateID);
-
-    if (!cv) {
-      cv.personalData.phone = candidate?.phone;
-    }
 
     return cv;
   }
