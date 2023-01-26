@@ -4,6 +4,7 @@ import {
   Inject,
   NotFoundException,
 } from '@nestjs/common';
+import { CvService } from 'src/modules/cv/services/cv.service';
 import { BcryptRepositoryService } from 'src/repository/bcrypt/bcrypt.repository.service';
 import { CandidateRepositoryService } from 'src/repository/services/candidate/candidate.repository.service';
 import { UserRepositoryService } from 'src/repository/services/user/user.repository.service';

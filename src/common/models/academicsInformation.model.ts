@@ -35,6 +35,16 @@ export class AcademicsInformationsModel {
   })
   academicFormationStatus: AcademicStatusType;
 
+  @ApiProperty({
+    description: 'inicio da graduação',
+  })
+  graduationStartDate: Date;
+
+  @ApiProperty({
+    description: 'fim da graduação',
+  })
+  graduationEndDate?: Date;
+
   @ApiProperty()
   createdAt: Date;
 

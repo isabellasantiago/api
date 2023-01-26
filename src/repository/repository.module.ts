@@ -18,6 +18,8 @@ import { CompanyEntity } from 'src/entities/company.entity';
 import { JobVacanciesRepositoryService } from './services/jobVacancies/jobVacancies.repository.service';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
 import { CvRepositoryService } from './services/cv/cv.repository.service';
+import { CandidatesByJobVacancieEntity } from 'src/entities/candidatesByJobVacancie.entity';
+import { CandidatesByJobVacancieRepository } from './services/candidatesByJobVacancie/candidatesByJobVacancies.repository';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
       PreviousJobsEntity,
       LanguagesInformationEntity,
       AcademicsInformationsEntity,
+      CandidatesByJobVacancieEntity,
     ]),
     InfraModule,
   ],
@@ -41,6 +44,7 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
     CvRepositoryService,
+    CandidatesByJobVacancieRepository,
   ],
   exports: [
     UserRepositoryService,
@@ -50,6 +54,7 @@ import { CvRepositoryService } from './services/cv/cv.repository.service';
     BcryptRepositoryService,
     JobVacanciesRepositoryService,
     CvRepositoryService,
+    CandidatesByJobVacancieRepository,
   ],
 })
 export class RepositoryModule {}

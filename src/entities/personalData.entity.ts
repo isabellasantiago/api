@@ -54,12 +54,6 @@ export class PersonalDataEntity extends Model<PersonalDataEntity> {
   phone: string;
 
   @Column
-  isPcd: boolean;
-
-  @Column
-  allowsWhatsapp: boolean;
-
-  @Column
   field: string;
 
   @Column({

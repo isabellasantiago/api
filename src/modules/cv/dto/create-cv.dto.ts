@@ -7,9 +7,6 @@ import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
 
 export class CreateOrUpdateCvDTO {
   @ApiProperty()
-  candidateID: number;
-
-  @ApiProperty()
   imageURL?: string;
 
   @ApiProperty()

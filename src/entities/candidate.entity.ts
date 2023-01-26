@@ -10,6 +10,7 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { AcademicsInformationsEntity } from './academicsInformations.entity';
+import { CandidatesByJobVacancieEntity } from './candidatesByJobVacancie.entity';
 import { LanguagesInformationEntity } from './languagesInformation.entity';
 import { PreviousJobsEntity } from './previousJobs.entity';
 import { UserEntity } from './user.entity';
@@ -77,4 +78,7 @@ export class CandidateEntity extends Model<CandidateEntity> {
 
   @HasMany(() => AcademicsInformationsEntity)
   academicsInformations: AcademicsInformationsEntity[];
+
+  @HasMany(() => CandidatesByJobVacancieEntity, 'candidateID')
+  CandidatesByJobVacancie: CandidatesByJobVacancieEntity[];
 }

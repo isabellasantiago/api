@@ -59,6 +59,16 @@ export class AcademicsInformationsEntity extends Model<AcademicsInformationsEnti
 
   @Column({
     type: DataType.DATE,
+  })
+  graduationStartDate: Date;
+
+  @Column({
+    type: DataType.DATE,
+  })
+  graduationEndDate: Date;
+
+  @Column({
+    type: DataType.DATE,
     defaultValue: DataType.NOW,
   })
   createdAt: Date;

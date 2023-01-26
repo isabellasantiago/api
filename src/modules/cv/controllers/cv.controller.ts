@@ -12,10 +12,9 @@ import {
 import { RolesGuards } from 'src/common/decorators/roles/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles/roles.decorator';
 import { UserType } from 'src/common/enums/user-type.enum';
-import { PersonalDataModel } from 'src/common/models/personalData.model';
+import { CvModel } from 'src/common/models/cv.model';
 import { JwtAuthGuard } from 'src/modules/auth/services/jwt-auth.guard';
 import { CreateOrUpdateCvDTO } from '../dto/create-cv.dto';
-import { ICv } from '../dto/cv-complete.output';
 import { CvService } from '../services/cv.service';
 
 @Controller('/cv')
@@ -24,11 +23,13 @@ export class CvController {
 
   @Roles(UserType.CANDIDATE)
   @UseGuards(JwtAuthGuard, RolesGuards)
-  @Post('/')
+  @Post('/:id')
   async createCv(
+    @Param(new ValidationPipe({ transform: true }))
+    param: { id: number },
     @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
-  ): Promise<PersonalDataModel> {
-    return await this.cvService.createCv(data);
+  ): Promise<CvModel> {
+    return await this.cvService.createCv(data, param.id);
   }
 
   @Get('/:candidateID')
@@ -37,14 +38,18 @@ export class CvController {
     param: {
       candidateID: number;
     },
-  ): Promise<ICv> {
-    return await this.cvService.getCompleteCv(param.candidateID);
+  ): Promise<CvModel> {
+    return await this.cvService.getResume(param.candidateID);
   }
 
   @Roles(UserType.CANDIDATE)
   @UseGuards(JwtAuthGuard, RolesGuards)
-  @Put('/')
-  async updateCv(@Body(new ValidationPipe({ transform: true})) data: CreateOrUpdateCvDTO): Promise<ICv> {
-    return await this.cvService.updateCv(data)
+  @Put('/:id')
+  async updateCv(
+    @Param(new ValidationPipe({ transform: true }))
+    param: { id: number },
+    @Body(new ValidationPipe({ transform: true })) data: CreateOrUpdateCvDTO,
+  ): Promise<CvModel> {
+    return await this.cvService.updateCv(data, param.id);
   }
 }

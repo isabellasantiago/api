@@ -1,5 +1,6 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { AcademicsInformationsModel } from 'src/common/models/academicsInformation.model';
+import { CvModel } from 'src/common/models/cv.model';
 import { LanguagesInformationModel } from 'src/common/models/languagesInformation.model';
 import { PersonalDataModel } from 'src/common/models/personalData.model';
 import { PreviousJobsModel } from 'src/common/models/previousJobs.model';
@@ -11,7 +12,6 @@ import {
 } from 'src/entities';
 import { LanguagesInformationEntity } from 'src/entities/languagesInformation.entity';
 import { CreateOrUpdateCvDTO } from 'src/modules/cv/dto/create-cv.dto';
-import { ICv } from 'src/modules/cv/dto/cv-complete.output';
 
 export class CvRepositoryService {
   constructor(
@@ -28,25 +28,29 @@ export class CvRepositoryService {
   ) {}
 
   async createCv({
-    candidateID,
-    imageURL,
-    linkedinURL,
-    naturalness,
-    birthDate,
-    state,
-    city,
-    phone,
-    field,
-    contractType,
-    level,
-    role,
-    academics,
-    languages,
-    previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<PersonalDataModel> {
+      imageURL,
+      linkedinURL,
+      naturalness,
+      birthDate,
+      state,
+      city,
+      phone,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+    }: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const transaction = await this.personalDataEntity.sequelize.transaction();
-
     try {
+      let academicsInfo: AcademicsInformationsModel[] | void[] = [];
+      let languagesInfo: LanguagesInformationModel[] | void[] = [];
+      let previousJobsInfo: PreviousJobsModel[] | void[] = [];
+
       const personalData = await this.personalDataEntity.create({
         candidateID,
         imageURL,
@@ -61,78 +65,95 @@ export class CvRepositoryService {
         role,
         contractType,
       });
-
-      if (academics) {
-        await Promise.all(
-          academics.map(
-            async ({
+      
+      if (academics?.length > 0) {
+        const promises = academics.map(
+          async ({
+            instituitionName,
+            academicFormation,
+            academicFormationStatus,
+            courseName,
+            graduationStartDate,
+            graduationEndDate
+          }) => {
+            await this.academicsEntity.create({
+              candidateID,
               instituitionName,
+              courseName,
               academicFormation,
               academicFormationStatus,
-              courseName,
-            }) => {
-              await this.academicsEntity.create({
-                candidateID,
-                instituitionName,
-                courseName,
-                academicFormation,
-                academicFormationStatus,
-              });
-            },
-          ),
+              graduationStartDate,
+              graduationEndDate
+            });
+          },
         );
+        const academic = await Promise.all(promises);
+        academicsInfo = academic?.length > 0 ? academic : [];
       }
 
-      if (languages) {
-        await Promise.all(
-          languages.map(
-            async ({ languageLevel, languageName }) =>
-              await this.languagesEntity.create({
-                candidateID,
-                languageName,
-                languageLevel,
-              }),
-          ),
-        );
+      if (languages?.length > 0) {
+        const promises = languages.map(
+          async ({ languageLevel, languageName }) =>
+            await this.languagesEntity.create({
+              candidateID,
+              languageName,
+              languageLevel,
+            }),
+        ),
+        languagesArray = await Promise.all(promises);
+        languagesInfo = languagesArray?.length > 0 ? languagesArray : []; 
       }
 
-      if (previousJobs) {
-        await Promise.all(
-          previousJobs.map(
-            async ({
+      if (previousJobs?.length > 0) {
+        const promises = previousJobs.map(
+          async ({
+            previousCompanyName,
+            role,
+            level,
+            fromDate,
+            toDate,
+            jobDescription,
+          }) =>
+            await this.previousJobsEntity.create({
+              candidateID,
               previousCompanyName,
               role,
               level,
               fromDate,
               toDate,
               jobDescription,
-            }) =>
-              await this.previousJobsEntity.create({
-                candidateID,
-                previousCompanyName,
-                role,
-                level,
-                fromDate,
-                toDate,
-                jobDescription,
-              }),
-          ),
+            }),
         );
+        const pvJobs = await Promise.all(promises);
+        previousJobsInfo = pvJobs?.length > 0 ? pvJobs : [];
       }
 
-      return personalData;
+      return {
+        id: personalData?.id,
+        candidateID,
+        personalData,
+        academicsInfo,
+        languagesInfo,
+        previousJobsInfo,
+      };
     } catch (err) {
       await transaction.rollback();
-      console.log(err.message);
+      console.log(err.message)
     }
   }
 
-  async getPersonalData(candidateID: number): Promise<PersonalDataModel> {
+  async getPersonalData(candidateID: number, include?: boolean): Promise<PersonalDataModel> {
     const candidate = await this.candidateEntity.findByPk(candidateID);
 
     if (candidate) {
       const pd = await this.personalDataEntity.findOne({
         where: { candidateID: candidate.id },
+        include: [
+          {
+            model: CandidateEntity, 
+            required: include,
+          }
+        ]
       });
 
       if (pd) return pd;
@@ -187,23 +208,25 @@ export class CvRepositoryService {
     return [];
   }
 
-  async updateCv({
-    candidateID,
-    imageURL,
-    linkedinURL,
-    naturalness,
-    birthDate,
-    state,
-    city,
-    phone,
-    field,
-    contractType,
-    level,
-    role,
-    academics,
-    languages,
-    previousJobs,
-  }: CreateOrUpdateCvDTO): Promise<ICv> {
+  async updateCv(
+    {
+      imageURL,
+      linkedinURL,
+      naturalness,
+      birthDate,
+      state,
+      city,
+      phone,
+      field,
+      contractType,
+      level,
+      role,
+      academics,
+      languages,
+      previousJobs,
+    }: CreateOrUpdateCvDTO,
+    candidateID: number,
+  ): Promise<CvModel> {
     const personalData = await this.personalDataEntity.findOne({
       where: { candidateID },
     });
@@ -232,11 +255,13 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      academics.map(async (academic) => {
-        await this.academicsEntity.create(academic);
-      }),
-    );
+    if (academics?.length) {
+      await Promise.all(
+        academics.map(async (academic) => {
+          await this.academicsEntity.create(academic);
+        }),
+      );
+    }
 
     const languagesArray = await this.getAllLanguages(candidateID);
     await Promise.all(
@@ -246,11 +271,13 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      languages.map(
-        async (language) => await this.languagesEntity.create(language),
-      ),
-    );
+    if (languages?.length) {
+      await Promise.all(
+        languages.map(
+          async (language) => await this.languagesEntity.create(language),
+        ),
+      );
+    }
 
     const previousJobsArray = await this.getAllPreviousJobs(candidateID);
     await Promise.all(
@@ -262,12 +289,14 @@ export class CvRepositoryService {
       ),
     );
 
-    await Promise.all(
-      previousJobs.map(
-        async (previousJob) =>
-          await this.previousJobsEntity.create(previousJob),
-      ),
-    );
+    if (previousJobs?.length) {
+      await Promise.all(
+        previousJobs.map(
+          async (previousJob) =>
+            await this.previousJobsEntity.create(previousJob),
+        ),
+      );
+    }
 
     const personalDataUpdated = await this.getPersonalData(candidateID);
     const academicUpdated = await this.getAllAcademics(candidateID);
@@ -275,12 +304,45 @@ export class CvRepositoryService {
     const previousJobsUpdated = await this.getAllPreviousJobs(candidateID);
 
     const resume = {
+      id: personalData.id,
+      candidateID,
       personalData: personalDataUpdated,
-      academics: academicUpdated,
-      languages: languageUpdated,
-      previousJobs: previousJobsUpdated,
+      academicsInfo: academicUpdated,
+      languagesInfo: languageUpdated,
+      previousJobsInfo: previousJobsUpdated,
     };
 
     return resume;
+  }
+
+  async getResume(candidateId: number): Promise<CvModel | undefined> {
+    const candidate = await this.candidateEntity.findByPk(candidateId);
+
+    if (!candidate) return undefined;
+
+    const pd = await this.personalDataEntity.findOne({
+      where: { candidateID: candidate.id },
+    });
+
+    const academicsInfo = await this.academicsEntity.findAll({
+      where: { candidateID: candidate.id },
+    });
+
+    const languagesInfo = await this.languagesEntity.findAll({
+      where: { candidateID: candidate.id },
+    });
+
+    const previousJobsInfo = await this.previousJobsEntity.findAll({
+      where: { candidateID: candidate.id },
+    });
+
+    return pd  ? {
+      id: pd?.id,
+      candidateID: pd?.candidateID,
+      personalData: pd,
+      academicsInfo,
+      languagesInfo,
+      previousJobsInfo,
+    } : undefined;
   }
 }

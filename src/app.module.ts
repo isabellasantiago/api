@@ -4,6 +4,7 @@ import { AppController } from './modules/app/controllers/app.controller';
 import { AppService } from './modules/app/service/app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { CandidateModule } from './modules/candidate/candidate.module';
+import { CandidatesByJobVacancieModule } from './modules/candidatesByJobVacancie/candidatesByJobVacancie.module';
 import { CompanyModule } from './modules/company/company.module';
 import { CvModule } from './modules/cv/cv.module';
 import { JobVacanciesModule } from './modules/jobVacancies/jobVacancies.module';
@@ -19,6 +20,7 @@ import { UserModule } from './modules/users/user.module';
     JobVacanciesModule,
     CvModule,
     AuthModule,
+    CandidatesByJobVacancieModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { UserType } from 'src/common/enums/user-type.enum';
 import { CandidateModel } from 'src/common/models/candidate.model';
-import { CandidateEntity, UserEntity } from 'src/entities';
+import { CandidateEntity, PersonalDataEntity, UserEntity } from 'src/entities';
 import { CreateCandidateDTO } from '../../../modules/candidate/dto/create-candidate.dto';
 import { UpdateCandidateDTO } from '../../../modules/candidate/dto/update-candidate.dto';
 
@@ -10,6 +10,8 @@ export class CandidateRepositoryService {
     @InjectModel(CandidateEntity)
     private readonly candidateEntity: typeof CandidateEntity,
     @InjectModel(UserEntity) private readonly userEntity: typeof UserEntity,
+    @InjectModel(PersonalDataEntity)
+    private readonly personalDataEntity: typeof PersonalDataEntity,
   ) {}
 
   async getCandidateByCPF(cpf: string): Promise<CandidateModel> {
@@ -34,6 +36,10 @@ export class CandidateRepositoryService {
         userID: user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
+      });
+      await this.personalDataEntity.create({
+        candidateID: candidate.id,
+        phone: candidate.phone,
       });
 
       transaction.commit();
